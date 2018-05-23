@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 AP library
 
@@ -52,3 +53,7 @@ Also, add in the build of cosmomc EXE
 
 cosmomc: directories camb $(OBJFILES)
         $(F90C) -o ../cosmomc $(OBJFILES) $(LINKFLAGS) $(F90FLAGS)  $$APlm
+=======
+# APLike
+Likelihood for AP
+>>>>>>> 69c87f997b86cfa65b525527796a6558528f8078
