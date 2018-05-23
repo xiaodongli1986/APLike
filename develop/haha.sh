@@ -1,0 +1,5 @@
+
+for nowfile in IOtest_10to15.mucut0.85_s6to40_polyfitdeg3_dataselfsyscor.png  IOtest_10to15.mucut0.90_s6to40_polyfitdeg3_dataselfsyscor.png  IOtest_10to15.mucut0.95_s6to40_polyfitdeg3_dataselfsyscor.png  IOtest_10to15.mucut0.99_s6to40_polyfitdeg3_dataselfsyscor.png  IOtest_15to20.mucut0.70_s6to40_polyfitdeg3_dataselfsyscor.png  IOtest_15to20.mucut0.75_s6to40_polyfitdeg3_dataselfsyscor.png  IOtest_15to20.mucut0.80_s6to40_polyfitdeg3_dataselfsyscor.png  IOtest_15to20.mucut0.85_s6to40_polyfitdeg3_dataselfsyscor.png  IOtest_15to20.mucut0.90_s6to40_polyfitdeg3_dataselfsyscor.png  IOtest_15to20.mucut0.95_s6to40_polyfitdeg3_dataselfsyscor.png  IOtest_15to20.mucut0.99_s6to40_polyfitdeg3_dataselfsyscor.png  
+do
+rm $nowfile
+done
