@@ -13,6 +13,7 @@ git add */Makefile
 git add README.md
 git add draft/*.tex
 git add draft/*.eps
+git add MCMCchains/*.tar.gz
 
 git commit -m 'updates'
 git push
