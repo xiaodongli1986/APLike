@@ -34,7 +34,7 @@ implicit none
   
   integer :: i, iz
   
-  real(rt) :: DAs(nz), Hs(nz), chisqs(nz-1), t1,t2
+  real(rt) :: DAs(nz), Hs(nz), chisqs(nz-1), t1,t2, chisqs__uncored(nz-1), APlnL, APlnL2
 
   type(omwpar) :: nowpar
   logical :: smutabstds_inited, inited, printinfo
@@ -42,8 +42,13 @@ implicit none
   AP_inited = .false.
   printinfo = .true.
   
-  do i = 1, 10
-  nowpar%omegam = 0.26_rt + 0.01_rt * (i-1); nowpar%w = -1.0_rt
+  open(unit=100001,file='AP_main_bigcov.txt',action='write')
+  open(unit=100002,file='AP_main_smallcov.txt',action='write')
+  write(100001,'(A)') '# omegam, lnlike, lnlike (uncorre)'
+  write(100002,'(A)') '# omegam, lnlike, lnlike (uncorre)'
+
+  do i = 1, 100
+  nowpar%omegam = 0.1_rt + 0.004_rt * (i-1); nowpar%w = -1.0_rt
   print *, '###################################################'
   print *, '** Compuate AP chisqs for Lambda CDM model: '
   print *, '   omega_matter, w = ', nowpar%omegam, nowpar%w
@@ -55,12 +60,39 @@ implicit none
     !print *, iz, DAs(iz), Hs(iz)
   enddo
       
+!subroutine AP_like(DAs, Hs, chisqs,  printinfo, compute_covmat, use_bigcovmat, covmat_suffixstr, chisqs__uncored, sepchisqs_uncored_result, sepchisqs_result)
+!    implicit none
+!    real(rt), intent(in) :: DAs(nz), Hs(nz)
+!    logical, intent(in) :: printinfo
+!    real(rt), intent(out):: chisqs(nz-1)
+!    real(rt), intent(out), optional :: chisqs__uncored(nz-1)
+!    real(rt), intent(out), optional :: sepchisqs_uncored_result(n1,n2), sepchisqs_result(n1,n2)
+!    logical, intent(in), optional :: compute_covmat, use_bigcovmat
+!    character(*), intent(in), optional :: covmat_suffixstr
+
+
   ! AP likelihood
-  print *, nowpar%omegam
-  call AP_Like(DAs, Hs,  chisqs, printinfo) 
+ ! call AP_Like(DAs, Hs,  chisqs, printinfo) 
+  NBComp = .true.; chisqs=0; chisqs__uncored=0
+  call AP_Like(DAs,Hs,chisqs,printinfo=printinfo,use_bigcovmat=.true.,chisqs__uncored=chisqs__uncored,compute_covmat=.false.)
+  APlnL  = chisqs(1)/2.0;
+  APlnL2 = chisqs__uncored(1)/2.0
+  write(*,'(A,2f10.3)') '  lnlike (sys-corred, uncorred),    big    covmat: ', real(APlnL), real(APlnL2)
+  write(100001,'(3e14.7)') nowpar%omegam, APlnL, APlnL2
+  NBComp = .false.; chisqs=0; chisqs__uncored=0
+!  if(i.eq.1) AP_inited=.false.
+!  call AP_Like(DAs,Hs,chisqs,printinfo=printinfo,use_bigcovmat=.false.,chisqs__uncored=chisqs__uncored,compute_covmat=.false.)
+!  APlnL  = sum(chisqs(1:nz-1))/2.0
+!  APlnL2 = sum(chisqs__uncored(1:nz-1))/2.0
+!  write(*,'(A,2f10.3)') '  lnlike (sys-corred, uncorred), ''small'' covmat: ', real(APlnL), real(APlnL2)
+!  write(100002,'(3e14.7)') nowpar%omegam, APlnL, APlnL2
+
+
+
   if(i.eq.1)   call cpu_time(t1)
   enddo
   call cpu_time(t2)
+  close(100001); close(100002);
   print *, 'Total time used: ', t2-t1
 
 

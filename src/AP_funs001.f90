@@ -32,8 +32,8 @@ implicit none
   ! Setting: The binning schemes (number of bins in the mu space )
 !  integer, parameter :: N1=36
 !  integer, parameter :: mubins(N1) = (/ 5,6,7,8,9,10,11,12,13,14,&
-!  		15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30, &
-!  		31,32,33,34,35,36,37,38,39,40 /)
+!                  15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30, &
+!                  31,32,33,34,35,36,37,38,39,40 /)
 
 !!  integer, parameter ::  N2=26
 !!  real(rt), parameter :: mucuts(N2) = (/ 0.99_rt, 0.98_rt, 0.97_rt, 0.96_rt, 0.95_rt, 0.94_rt, &
@@ -50,15 +50,18 @@ implicit none
 
 !####################################
 ! * Standard for old 1st-bin reference method
-  integer, parameter :: N1=10, N2=5
-  integer, parameter :: mubins(N1) = (/ 6,7,8,9,10,11,12,13,14,15 /)
-!  integer, parameter :: mubins(N1) = (/ 15,16,17,18,19,20 /)
+  integer, parameter :: N1=6, N2=1
+!  integer, parameter :: mubins(N1) = (/ 6,7,8,9,10,11,12,13,14,15 /)
+!  integer, parameter :: mubins(N1) = (/ 10,11,12,13,14,15,16,17,18,19,20 /)
+  integer, parameter :: mubins(N1) = (/ 15,16,17,18,19,20 /)
+!  integer, parameter :: mubins(N1) = (/ 21,22,23,24,25,26 /)
 !  integer, parameter :: mubins(N1) = (/ 20,21,22,23,24,25 /)
 !  integer, parameter :: mubins(N1) = (/ 25,26,27,28,29,30 /)
 !  integer, parameter :: mubins(N1) = (/ 30,31,32,33,34,35 /)
-  !real(rt), parameter :: mucuts(N2) = (/  0.95_rt, 0.94_rt, 0.93_rt, 0.92_rt, 0.91_rt, 0.90_rt, 0.89_rt, 0.88_rt, 0.87_rt, 0.86_rt, 0.85_rt /) 
-  real(rt), parameter :: mucuts(N2) = (/  0.97_rt,0.96_rt,0.95_rt,0.94_rt,0.93_rt  /)
+  real(rt), parameter :: mucuts(N2) = (/ 0.97_rt/) !,0.96_rt, 0.95_rt, 0.94_rt, 0.93_rt, 0.92_rt, 0.91_rt, 0.90_rt, 0.89_rt, 0.88_rt, 0.87_rt, 0.86_rt, 0.85_rt /) 
+!  real(rt), parameter :: mucuts(N2) = (/  0.97_rt,0.96_rt,0.95_rt,0.94_rt,0.93_rt  /)
 !  real(rt), parameter :: mucuts(N2) = (/  0.90_rt,0.89_rt,0.88_rt,0.87_rt,0.86_rt  /)
+!  real(rt), parameter :: mucuts(N2) = (/  0.97_rt /)
 !####################################
 !####################################
 ! * Standard for bigcov
@@ -92,7 +95,7 @@ implicit none
   !real(rt), parameter :: mucuts(N2) = (/  0.99_rt, 0.95_rt, 0.90_rt, 0.85_rt, 0.80_rt, 0.75_rt, 0.70_rt  /) 
 
   ! Compare i-th bin with the (i-1) th bin (rather than choosing one specific bin as the reference...)
-  logical :: NBComp = .true., NBComp_Simp = .true.
+  logical :: NBComp = .true., NBComp_Simp = .false.
  
 !!! ABANDON !!!
   logical, parameter :: output_sep_schemes = .true.
@@ -119,10 +122,10 @@ implicit none
 !! Settings of 2pCF (rmax: maximal s; nbins: number of binning in s; mubins: number of binning in mu)
 !!  data: observational data; sys: Horizon Run 4 N-body mock for systematic correction; cov: Multidark-Patchy mocks for covariance estimation
   integer, parameter :: &
-			smax_database=150, nbins_database=750, mubins_database=600, & ! 2pCF of observational data, in "baseline" cosmologies
+                        smax_database=150, nbins_database=750, mubins_database=600, & ! 2pCF of observational data, in "baseline" cosmologies
                         !smax_database=150, nbins_database=150, mubins_database=120, & !use this if using mock_IO_test!!!
 !  integer, parameter :: smax_database=150, nbins_database=1200, mubins_database=960, & ! 2pCF of observational data, in "baseline" cosmologies
-			smax_data=51, nbins_data=51, mubins_data=120, & ! 2pCF of observational data, in general cosmologies
+                        smax_data=51, nbins_data=51, mubins_data=120, & ! 2pCF of observational data, in general cosmologies
                         smax_sysmock=150, nbins_sysmock=150, mubins_sysmock=120, & ! 2pCF from Horizon Run 4 mocks, used for estimation of covmat 
                         smax_covmock=51,  nbins_covmock=51, mubins_covmock=120, &  ! 2pCF from Patchy mocks, used for systematic correction
                         ncovmocks = 1900, nsysmocks = 4 ! number of mocks used for covmat-estimation and systematic-correction
@@ -132,7 +135,7 @@ implicit none
 ! Setting: Integration limits of s
   real(rt), parameter :: ints1 = 6.0_rt, ints2 = 40.0_rt
 ! Settings: polynomical fitting degeree for dintxi_sys
-  integer, parameter :: polyfitdeg = 5
+  integer, parameter :: polyfitdeg = 3
   logical, parameter :: mock_IO_test = .false.
   integer :: gb_mock_IO_test_id = 0 !!! We shall do self IO test...
   logical, parameter :: mock_IO_test_usemock3=(.false..and.mock_IO_test)
@@ -486,64 +489,64 @@ contains
   !  polynomial fitting to data points
   ! Y(i) = A(1) + A(2)*X(1) + A(3)*X(2)^2 + ... 
   !        + A(n+1)*X(n)^n
-  !------------------------------------------  	
-	subroutine poly_fit(X,Y,A,ndat,n)
-		! Dummy
-		real(rt), intent(in) :: X(ndat),Y(ndat)
-		integer, intent(in) :: ndat,n
-		real(rt), intent(out) :: A(n+1)
-		! Local
-		real(rt) :: CapX(ndat,n+1), CapMatA(n+1,n+1), CapMatB(n+1,n+1), CapMatC(n+1,ndat)
-		integer :: i,j,k
-		! CapX(i,j) = X(i) ^ (j-1)
-		do i = 1, ndat
-		do j = 1, n+1
-			CapX(i,j) = X(i)**(j-1)
-		enddo
-		enddo
-		! CapMatA = ( CapX^T CapX)
-		do i = 1,n+1
-		do j = 1,n+1
-			CapMatA(i,j) = 0.0_rt
-			do k = 1,ndat
-				CapMatA(i,j) = CapMatA(i,j) + CapX(k,i)*CapX(k,j)
-			enddo
-		enddo
-		enddo
-		! CapMatB = ( CapX^T CapX )^(-1)
-		call nizhen(CapMatA,CapMatB,n+1)
-		! CapMatC = ( CapX^T CapX )^(-1) CapX^T
-		do i = 1, n+1
-		do j = 1, ndat
-			CapMatC(i,j) = 0.0_rt
-			do k = 1, n+1
-				CapMatC(i,j) = CapMatC(i,j) + CapMatB(i,k)*CapX(j,k)
-			enddo
-		enddo
-		enddo
-		! A = ( CapX^T CapX )^(-1) CapX^T Y
-		do i = 1, n+1
-			A(i) = 0.0_rt
-			do j = 1, ndat
-				A(i) = A(i) + CapMatC(i,j)*Y(j)
-			enddo
-		enddo
-  	end subroutine poly_fit
+  !------------------------------------------          
+        subroutine poly_fit(X,Y,A,ndat,n)
+                ! Dummy
+                real(rt), intent(in) :: X(ndat),Y(ndat)
+                integer, intent(in) :: ndat,n
+                real(rt), intent(out) :: A(n+1)
+                ! Local
+                real(rt) :: CapX(ndat,n+1), CapMatA(n+1,n+1), CapMatB(n+1,n+1), CapMatC(n+1,ndat)
+                integer :: i,j,k
+                ! CapX(i,j) = X(i) ^ (j-1)
+                do i = 1, ndat
+                do j = 1, n+1
+                        CapX(i,j) = X(i)**(j-1)
+                enddo
+                enddo
+                ! CapMatA = ( CapX^T CapX)
+                do i = 1,n+1
+                do j = 1,n+1
+                        CapMatA(i,j) = 0.0_rt
+                        do k = 1,ndat
+                                CapMatA(i,j) = CapMatA(i,j) + CapX(k,i)*CapX(k,j)
+                        enddo
+                enddo
+                enddo
+                ! CapMatB = ( CapX^T CapX )^(-1)
+                call nizhen(CapMatA,CapMatB,n+1)
+                ! CapMatC = ( CapX^T CapX )^(-1) CapX^T
+                do i = 1, n+1
+                do j = 1, ndat
+                        CapMatC(i,j) = 0.0_rt
+                        do k = 1, n+1
+                                CapMatC(i,j) = CapMatC(i,j) + CapMatB(i,k)*CapX(j,k)
+                        enddo
+                enddo
+                enddo
+                ! A = ( CapX^T CapX )^(-1) CapX^T Y
+                do i = 1, n+1
+                        A(i) = 0.0_rt
+                        do j = 1, ndat
+                                A(i) = A(i) + CapMatC(i,j)*Y(j)
+                        enddo
+                enddo
+          end subroutine poly_fit
   !------------------------------------------
   ! Value of a n-th polynomial 
   !  at some value of x
-  !------------------------------------------   	
-  	real(rt) function poly(x,A,n)
-  		! Dummy
-  		real(rt), intent(in) :: x, A(n+1)
-  		integer, intent(in) :: n
-  		! local
-  		integer :: i
-  		poly = A(1)
-  		do i = 1, n
-  			poly = poly + A(i+1)*x**(i)
-  		enddo
-  	end function poly
+  !------------------------------------------           
+          real(rt) function poly(x,A,n)
+                  ! Dummy
+                  real(rt), intent(in) :: x, A(n+1)
+                  integer, intent(in) :: n
+                  ! local
+                  integer :: i
+                  poly = A(1)
+                  do i = 1, n
+                          poly = poly + A(i+1)*x**(i)
+                  enddo
+          end function poly
   !------------------------------------------
   ! polynomial regression of curve Y
   !------------------------------------------
@@ -821,22 +824,22 @@ contains
       //trim(adjustl(tmpstr2))//'mubins.'
     if (iz .eq. 1) then
       filename = trim(adjustl(data2pcffiledir))//'/2pcfs/DR12_LOWZ_data.xyzw.1of3.cosmo-converted.'//&
-	trim(adjustl(omwstr(ombase,wbase)))//trim(adjustl(filestr))//'2pcf'
+        trim(adjustl(omwstr(ombase,wbase)))//trim(adjustl(filestr))//'2pcf'
     elseif (iz .eq. 2) then
       filename = trim(adjustl(data2pcffiledir))//'/2pcfs/DR12_LOWZ_data.xyzw.2of3.cosmo-converted.'//&
-	trim(adjustl(omwstr(ombase,wbase)))//trim(adjustl(filestr))//'2pcf'
+        trim(adjustl(omwstr(ombase,wbase)))//trim(adjustl(filestr))//'2pcf'
     elseif (iz .eq. 3) then
       filename = trim(adjustl(data2pcffiledir))//'/2pcfs/DR12_LOWZ_data.xyzw.3of3.cosmo-converted.'//&
-	trim(adjustl(omwstr(ombase,wbase)))//trim(adjustl(filestr))//'2pcf'
+        trim(adjustl(omwstr(ombase,wbase)))//trim(adjustl(filestr))//'2pcf'
     elseif (iz .eq. 4) then
       filename = trim(adjustl(data2pcffiledir))//'/2pcfs/DR12_CMASS_data.xyzw.1of3.cosmo-converted.'//&
-	trim(adjustl(omwstr(ombase,wbase)))//trim(adjustl(filestr))//'2pcf'
+        trim(adjustl(omwstr(ombase,wbase)))//trim(adjustl(filestr))//'2pcf'
     elseif (iz .eq. 5) then
       filename = trim(adjustl(data2pcffiledir))//'/2pcfs/DR12_CMASS_data.xyzw.2of3.cosmo-converted.'//&
-	trim(adjustl(omwstr(ombase,wbase)))//trim(adjustl(filestr))//'2pcf'
+        trim(adjustl(omwstr(ombase,wbase)))//trim(adjustl(filestr))//'2pcf'
     elseif (iz .eq. 6) then
       filename = trim(adjustl(data2pcffiledir))//'/2pcfs/DR12_CMASS_data.xyzw.3of3.cosmo-converted.'//&
-	trim(adjustl(omwstr(ombase,wbase)))//trim(adjustl(filestr))//'2pcf'
+        trim(adjustl(omwstr(ombase,wbase)))//trim(adjustl(filestr))//'2pcf'
     endif
     data2pcffile_base = filename
   end function data2pcffile_base
@@ -983,9 +986,9 @@ contains
     
     open(unit=44817,file=filename)
     if (.not.present(printflag)) then
-	    write(*,'(A)') ' (ximu_loadsmufile) Load in 2pCF file: ', trim(adjustl(filename))
+            write(*,'(A)') ' (ximu_loadsmufile) Load in 2pCF file: ', trim(adjustl(filename))
     elseif(printflag) then
-	    write(*,'(A)') ' (ximu_loadsmufile) Load in 2pCF file: ', trim(adjustl(filename))
+            write(*,'(A)') ' (ximu_loadsmufile) Load in 2pCF file: ', trim(adjustl(filename))
     endif
     read(44817,*) nowstr
     !print *, nowstr
@@ -1033,9 +1036,9 @@ contains
             print *, ' (calc_covmats) file not found: ', trim(adjustl(nowfile)); stop
         endif
         if(mod(imock,50).eq.0) then
-        	printflag=.true.
+                printflag=.true.
         else
-        	printflag=.false.
+                printflag=.false.
         endif
         ! 2.2.2 Load in 2pCF file
         call ximu_loadsmufile(nowfile, smutab_covmock, smax_covmock, nbins_covmock, mubins_covmock,printflag)
@@ -1054,7 +1057,7 @@ contains
              print *, 'intxi  = ', real(tmpX(1:mubins(i)))
              print *, ' python rlt =  [15.089811191950611, 13.224163227234758, ... 16.289372112713142, 16.269104458682122]'
              print *, 'intxi, normed = ', real(intxis(1:mubins(i)-1,imock,iz,i,j))
-	     print *, ' python rlt =  [1.0191467989709562, 0.89314329057311137, ... 1.1001636292688675, 1.0987947775009022]'
+             print *, ' python rlt =  [1.0191467989709562, 0.89314329057311137, ... 1.1001636292688675, 1.0987947775009022]'
           endif
         enddo
         enddo
@@ -1137,9 +1140,9 @@ contains
             print *, ' (calc_covmats) file not found: ', trim(adjustl(nowfile)); stop
         endif
         if(mod(imock,50).eq.0) then
-        	printflag=.true.
+                printflag=.true.
         else
-        	printflag=.false.
+                printflag=.false.
         endif
         ! 2.2.2 Load in 2pCF file
         call ximu_loadsmufile(nowfile, smutab_covmock, smax_covmock, nbins_covmock, mubins_covmock,printflag)
@@ -1158,7 +1161,7 @@ contains
              print *, 'intxi  = ', real(tmpX(1:mubins(i)))
              print *, ' python rlt =  [15.089811191950611, 13.224163227234758, ... 16.289372112713142, 16.269104458682122]'
              print *, 'intxi, normed = ', real(intxis(1:mubins(i)-1,imock,iz,i,j))
-	     print *, ' python rlt =  [1.0191467989709562, 0.89314329057311137, ... 1.1001636292688675, 1.0987947775009022]'
+             print *, ' python rlt =  [1.0191467989709562, 0.89314329057311137, ... 1.1001636292688675, 1.0987947775009022]'
           endif
         enddo
         enddo
@@ -1361,7 +1364,7 @@ contains
     do j = 1, n2
     do iz= 2, nz
       nowfile = covmatfilename(mubins(i),mucuts(j),iz,tmpstr)
-!      print *, 'Write covmat to : ', trim(adjustl(nowfile))
+      write(*,'(A,/,A)'), ' (load_covmats) Load covmat from : ', trim(adjustl(nowfile))
       open(unit=7733,file=nowfile,action='read')
       nA = mubins(i)-1
       if (allocated(covmats(i,j,iz-1)%A) .and. covmats(i,j,iz-1)%nA .ne. nA) deallocate(covmats(i,j,iz-1)%A)
@@ -1388,7 +1391,7 @@ contains
     do i = 1, n1
     do j = 1, n2
       nowfile = bigcovmatfilename(mubins(i),mucuts(j),tmpstr)
-!      print *, 'Write covmat to : ', trim(adjustl(nowfile))
+      write(*,'(A,/,A)'), ' (load_bigcovmats) Load bigcovmat from : ', trim(adjustl(nowfile))
       open(unit=7733,file=nowfile,action='read')
       nA = (mubins(i)-1) * (nz-1)
       if (allocated(bigcovmats(i,j)%A) .and. bigcovmats(i,j)%nA .ne. nA) deallocate(bigcovmats(i,j)%A)
@@ -1427,7 +1430,7 @@ contains
       do j = 1, n2
           call nizhen(bigcovmats(i,j)%A, B, (mubins(i)-1)*(nz-1))
           bigcovmats(i,j)%A = B
-!	!This will ignore the correlation between different redshift bins!
+!        !This will ignore the correlation between different redshift bins!
         !do iz = 2, nz
         !  call nizhen(bigcovmats(i,j)%A((iz-2)*n+1:(iz-1)*n,(iz-2)*n+1:(iz-1)*n), tmpB, n)
         !  bigcovmats(i,j)%A((iz-2)*n+1:(iz-1)*n,(iz-2)*n+1:(iz-1)*n) = tmpB
@@ -1454,7 +1457,7 @@ contains
       do j = 1, n2
           call nizhen(bigcovmatsfc(i,j)%A, B, (mubins(i)-1)*(nzfc-1))
           bigcovmatsfc(i,j)%A = B
-!	!This will ignore the correlation between different redshift bins!
+!        !This will ignore the correlation between different redshift bins!
         !do iz = 2, nz
         !  call nizhen(bigcovmats(i,j)%A((iz-2)*n+1:(iz-1)*n,(iz-2)*n+1:(iz-1)*n), tmpB, n)
         !  bigcovmats(i,j)%A((iz-2)*n+1:(iz-1)*n,(iz-2)*n+1:(iz-1)*n) = tmpB
@@ -1531,7 +1534,7 @@ contains
         ! 1.1 Check existence of 2pCF file
         nowfile=syscor2pcffile(iz,imock)
         if(mock_IO_test_usemock3) then
-	  print *, 'WARNING!!!!!! Using a particular mock to do systematic-cor!!!'
+          print *, 'WARNING!!!!!! Using a particular mock to do systematic-cor!!!'
           nowfile=syscor2pcffile(iz,3)
         endif
         inquire(file=nowfile,exist=logvar)
@@ -1539,6 +1542,7 @@ contains
             print *, ' (calc_syscor) file not found: ', trim(adjustl(nowfile)); stop
         endif
         ! 1.2 Load in 2pCF file
+        !write(*,'(A,/,A)'), ' (calc_syscor) load in syscor file: ', trim(adjustl(nowfile));
         call ximu_loadsmufile(nowfile, smutab_sysmock, smax_sysmock, nbins_sysmock, mubins_sysmock)
         ! 1.3 Compute intxi in the N1*N2 binning schemes
         deltas = smax_sysmock / dble(nbins_sysmock)
@@ -1554,16 +1558,16 @@ contains
           call normfun(tmpX(1:mubins(i)),mubins(i),intxis(1:mubins(i)-1,imock,iz,i,j)) ! normalise the amplitude
           !intxis(maxval(mubins),nsysmocks,nz,N1,N2)
 !          print *, real(mumids(1:mubins(i)))
-	  if (debug_calc_syscor .and. mubins(i).eq.25 .and. j .eq. 1 .and.iz.eq.1.and.imock.eq.1) then
-		print *, '##############################'
-		print *, 'Check syscor: '
-	  	print *, ' * iz, imock = ', iz, imock
-	  	print *, '   intxi = ', real(tmpX(1:mubins(i)))
-	  	print *, '   python result = [14.579422652657449, 12.460830746410542,  ... 18.923018560735642]'
-	  	print *, '   intxi, normed = ', real(intxis(1:mubins(i)-1,imock,iz,i,j))
-		print *, '   python result = [0.91530223976179914, 0.78229615556164356, ... 1.1965964165392333, 1.18...]'
-	  	print *
-	  endif
+          if (debug_calc_syscor .and. mubins(i).eq.25 .and. j .eq. 1 .and.iz.eq.1.and.imock.eq.1) then
+                print *, '##############################'
+                print *, 'Check syscor: '
+                  print *, ' * iz, imock = ', iz, imock
+                  print *, '   intxi = ', real(tmpX(1:mubins(i)))
+                  print *, '   python result = [14.579422652657449, 12.460830746410542,  ... 18.923018560735642]'
+                  print *, '   intxi, normed = ', real(intxis(1:mubins(i)-1,imock,iz,i,j))
+                print *, '   python result = [0.91530223976179914, 0.78229615556164356, ... 1.1965964165392333, 1.18...]'
+                  print *
+          endif
         enddo
         enddo
 !        stop
@@ -1630,9 +1634,9 @@ contains
 ! Mapping xi(s,mu) from baseline cosmology to another 
 ! Dense grid in baseline cosmology, sparse grid in another
   subroutine DSMapping(smutabstd, nums1, nummu1, smutab2, &
-	  nums2, nummu2, DAstd, DAnew, Hstd, Hnew, deltas1,  deltas2,  &
-	  smin_mapping, smax_mapping ) ! range of s considered in the coordinate transformation:  
-	                               ! basically, smin_mapping < s1 < s2 < smax_mapping.
+          nums2, nummu2, DAstd, DAnew, Hstd, Hnew, deltas1,  deltas2,  &
+          smin_mapping, smax_mapping ) ! range of s considered in the coordinate transformation:  
+                                       ! basically, smin_mapping < s1 < s2 < smax_mapping.
     ! argument
     real(rt), intent(in) :: smutabstd(nums1,nummu1,3), DAstd, DAnew, Hstd, Hnew, &
       deltas1, deltas2, smin_mapping, smax_mapping
@@ -1731,8 +1735,8 @@ contains
       do iangle1 = 0, nummu1-1
         scenter2=smutabstd_centers(is1+1,iangle1+1,1)
         anglecenter2=smutabstd_centers(is1+1,iangle1+1,2)
-	is2=smutabstd_ismus(is1+1,iangle1+1,1)
-	iangle2=smutabstd_ismus(is1+1,iangle1+1,2)
+        is2=smutabstd_ismus(is1+1,iangle1+1,1)
+        iangle2=smutabstd_ismus(is1+1,iangle1+1,2)
         if (is2.ge.nums2 .or. iangle2.ge.nummu2) cycle
         
  !    if method == 'divided_pixel':
@@ -1940,7 +1944,7 @@ contains
              smutab2(is2_bound+1,iangle2_bound+1,3) = smutab2(is2_bound+1,iangle2_bound+1,3)+countRR*rat4
             endif
           endif              
-          cycle ! haha	
+          cycle ! haha        
 !                    # diff s
  !                   rat2 = (1-rats)*ratangle
 !                    if is2_bound < nums2:
@@ -2021,9 +2025,9 @@ contains
 
     if(present(mumids)) then
       do j = 1,nummuedge-1
-	k1 = floor(angleindices(j)+1+0.00001) 
-	k2 = floor(angleindices(j+1)+0.00001)
-	mumids(j) = dble((k1-1) + k2)/2.0_rt*deltamu
+        k1 = floor(angleindices(j)+1+0.00001) 
+        k2 = floor(angleindices(j+1)+0.00001)
+        mumids(j) = dble((k1-1) + k2)/2.0_rt*deltamu
       enddo
     endif
 
@@ -2071,7 +2075,7 @@ contains
          RR = RR + smutab(i,k,3)
        enddo
       endif
-	      
+              
       xi = (DD-2.0_rt*DR) / RR + 1.0_rt
       intxi(j) = intxi(j) + xi 
     enddo
@@ -2117,9 +2121,9 @@ contains
     
     if(present(mumids)) then
       do j = 1,actual_nummuedge-1
-	k1 = floor(angleindices(j)+1+0.00001) 
-	k2 = floor(angleindices(j+1)+0.00001)
-	mumids(j) = dble((k1-1) + k2)/2.0_rt*deltamu
+        k1 = floor(angleindices(j)+1+0.00001) 
+        k2 = floor(angleindices(j+1)+0.00001)
+        mumids(j) = dble((k1-1) + k2)/2.0_rt*deltamu
       enddo
 !      print *, 'mumids = ', mumids
     endif
@@ -2146,7 +2150,7 @@ contains
       i2 = i1 + actual_nummuedge -2
 !      print *, i1, i2, sedges(i), sedges(i+1)
       call XiFun_std(smutab, deltas, numnbins, nummubins, anglemin, anglemax, &
-      	sedges(i), sedges(i+1), actual_nummuedge, intxi(i1:i2))
+              sedges(i), sedges(i+1), actual_nummuedge, intxi(i1:i2))
 !!      print *, 'loop = ', i
 !!      print *, 'i2-i1+1, actual_nummuedge = ', i2-i1+1, actual_nummuedge
 !!      print *, 'intxi(i1:i2)  = ', intxi(i1:i2)
@@ -2233,7 +2237,7 @@ contains
     do iomwstds = 1, numomwstds
     do iz = 1, nz
       call ximu_loadsmufile(data2pcffile_base(iz,omstds(iomwstds),wstds(iomwstds)), smutabstds(:,:,:,iz,iomwstds), &
-      	smax_database, nbins_database, mubins_database)
+              smax_database, nbins_database, mubins_database)
     enddo
     enddo
 
@@ -2332,56 +2336,56 @@ contains
         deltas1 = smax_database / float(nbins_database) 
         deltas2 = smax_data / float(nbins_data)
 !       print *, ' (smu_ximu_CalcOmWChisqs) Do DSMapping... iz = ', iz
-	if(.not.avg_counts) then
-	  parstd%omegam = omstds(iomwstds); parstd%w = wstds(iomwstds)
+        if(.not.avg_counts) then
+          parstd%omegam = omstds(iomwstds); parstd%w = wstds(iomwstds)
           parnew%omegam = omlist(iom); parnew%w=wlist(iw)
           DAstd = DAz_wcdm(parstd,zeffs(iz)); Hstd = Hz_wcdm(parstd,zeffs(iz))
           DAnew = DAz_wcdm(parnew,zeffs(iz)); Hnew = Hz_wcdm(parnew,zeffs(iz))
           call DSMapping(smutabstds(:,:,:,iz,iomwstds), nbins_database, mubins_database, smutab_data, &
-	    nbins_data, mubins_data, DAstd, DAnew, Hstd, Hnew, deltas1,  deltas2,  smin_mapping, smax_mapping)
-	else
-	  ! in case of avg_counts, sum up all smutabstds to build one
-	  parnew%omegam = omlist(iom); parnew%w=wlist(iw)
-	  DAnew = DAz_wcdm(parnew,zeffs(iz)); Hnew = Hz_wcdm(parnew,zeffs(iz))
-	  smutab_data = 0.0_rt
-	  do iomwstds2 = 1, numomwstds
-	    parstd%omegam = omstds(iomwstds2); parstd%w = wstds(iomwstds2)
-	    DAstd = DAz_wcdm(parstd,zeffs(iz)); Hstd = Hz_wcdm(parstd,zeffs(iz))
+            nbins_data, mubins_data, DAstd, DAnew, Hstd, Hnew, deltas1,  deltas2,  smin_mapping, smax_mapping)
+        else
+          ! in case of avg_counts, sum up all smutabstds to build one
+          parnew%omegam = omlist(iom); parnew%w=wlist(iw)
+          DAnew = DAz_wcdm(parnew,zeffs(iz)); Hnew = Hz_wcdm(parnew,zeffs(iz))
+          smutab_data = 0.0_rt
+          do iomwstds2 = 1, numomwstds
+            parstd%omegam = omstds(iomwstds2); parstd%w = wstds(iomwstds2)
+            DAstd = DAz_wcdm(parstd,zeffs(iz)); Hstd = Hz_wcdm(parstd,zeffs(iz))
             call DSMapping(smutabstds(:,:,:,iz,iomwstds2), nbins_database, mubins_database, smutab_data1, &
-	      nbins_data, mubins_data, DAstd, DAnew, Hstd, Hnew, deltas1,  deltas2,  smin_mapping, smax_mapping)
-	    smutab_data(:,:,:) = smutab_data(:,:,:) + &
-	      smutab_data1(:,:,:) * DAHweights(iomwstds2,iz) / dble(numomwstds)
-	  enddo
-	endif
-	  
+              nbins_data, mubins_data, DAstd, DAnew, Hstd, Hnew, deltas1,  deltas2,  smin_mapping, smax_mapping)
+            smutab_data(:,:,:) = smutab_data(:,:,:) + &
+              smutab_data1(:,:,:) * DAHweights(iomwstds2,iz) / dble(numomwstds)
+          enddo
+        endif
+          
 !       print *, ' (smu_ximu_CalcOmWChisqs) DSMapping done: iz = ', iz
         if(debug_calcchisq ) then !.and. mubins(i).eq.25 .and.j.eq.1
-        	print *, '####################################'
-        	print *, 'iz = ',iz
-		print *, "Checking: DAstd, DAnew, Hstd, Hnew = ", DAstd, DAnew, Hstd, Hnew
-		do i = 30, 31
-		  j = 1
-		  print *, i, smutab_data(i,j,1:3), (smutab_data(i,j,1)-2*smutab_data(i,j,2))/smutab_data(i,j,3)+1.0_rt
-		enddo	
+                print *, '####################################'
+                print *, 'iz = ',iz
+                print *, "Checking: DAstd, DAnew, Hstd, Hnew = ", DAstd, DAnew, Hstd, Hnew
+                do i = 30, 31
+                  j = 1
+                  print *, i, smutab_data(i,j,1:3), (smutab_data(i,j,1)-2*smutab_data(i,j,2))/smutab_data(i,j,3)+1.0_rt
+                enddo        
         endif
         
         do i1 = 1, N1
         do i2 = 1, N2
 !         print *, ' (smu_ximu_CalcOmWChisqs) Compute \int xi...'
-	  call XiFun(smutab_data, deltas2, nbins_data, mubins_data, &
-	    anglemin=1.0_rt-mucuts(i2), anglemax=1.0_rt, &
-	    smin=ints1, smax=ints2, &
-	    nummuedge=mubins(i1)+1, &
-	    intxi=intxi(1:mubins(i1)))
+          call XiFun(smutab_data, deltas2, nbins_data, mubins_data, &
+            anglemin=1.0_rt-mucuts(i2), anglemax=1.0_rt, &
+            smin=ints1, smax=ints2, &
+            nummuedge=mubins(i1)+1, &
+            intxi=intxi(1:mubins(i1)))
 !         print *, ' (smu_ximu_CalcOmWChisqs) Normalize \int xi...'
-	  call normfun(intxi(1:mubins(i1)),mubins(i1),intxis(1:mubins(i)-1,i1,i2,iz,iomwstds)) 
-	  if(debug_calcchisq .and. mubins(i1).eq.25 .and.i2.eq.1) then
-	  	print *, 'intxi = ', real(intxi(1:25))
-		print *
-		print *, 'intxi (normed) = ', real(intxis(1:24,i1,i2,iz,iomwstds))
-	  endif
-	enddo!        do i1 = 1, N1
-	enddo!        do i2 = 1, N2
+          call normfun(intxi(1:mubins(i1)),mubins(i1),intxis(1:mubins(i)-1,i1,i2,iz,iomwstds)) 
+          if(debug_calcchisq .and. mubins(i1).eq.25 .and.i2.eq.1) then
+                  print *, 'intxi = ', real(intxi(1:25))
+                print *
+                print *, 'intxi (normed) = ', real(intxis(1:24,i1,i2,iz,iomwstds))
+          endif
+        enddo!        do i1 = 1, N1
+        enddo!        do i2 = 1, N2
 !       print *, ' (smu_ximu_CalcOmWChisqs) Compute intxi done: iz = ', iz
       enddo!      do iz  = 1, nz
       enddo!do iomwstds = 1, numomwstds
@@ -2398,36 +2402,36 @@ contains
           ! Loop for omstd/wstd
           do iomwstds = 1, numomwstds
             if(avg_counts.and.iomwstds.gt.1) cycle
-	    ! chisq before sys cor
+            ! chisq before sys cor
             dintxi(1:n-1) = intxis(1:n-1,i1,i2,iz,iomwstds) - intxis(1:n-1,i1,i2,1,iomwstds)
             if(debug_calcchisq .and. mubins(i1).eq.25 .and.i2.eq.1) then
-            	print *, 'iz = ', iz
-          	print *
-          	print *, 'dintxi = ', dintxi(1:n-1)
+                    print *, 'iz = ', iz
+                  print *
+                  print *, 'dintxi = ', dintxi(1:n-1)
             endif
             if(.not.avg_counts) then
               chisqs_nosyscor(i1,i2,iz-1) = chisqs_nosyscor(i1,i2,iz-1) + &
-          	chisq_cov_xbar(dintxi(1:n-1), covmats(i1,i2,iz-1)%A, n-1)/dble(numomwstds)*DAHweights(iomwstds,iz)/factm2
+                  chisq_cov_xbar(dintxi(1:n-1), covmats(i1,i2,iz-1)%A, n-1)/dble(numomwstds)*DAHweights(iomwstds,iz)/factm2
             else
               chisqs_nosyscor(i1,i2,iz-1) = &
-          	chisq_cov_xbar(dintxi(1:n-1), covmats(i1,i2,iz-1)%A, n-1)/factm2
+                  chisq_cov_xbar(dintxi(1:n-1), covmats(i1,i2,iz-1)%A, n-1)/factm2
             endif
             chisqs_nosyscor_all(iz-1) = chisqs_nosyscor_all(iz-1) + chisqs_nosyscor(i1,i2,iz-1)/ dble(N1*N2)
-	    ! chisq after sys cor
+            ! chisq after sys cor
             dintxi(1:n-1) = dintxi(1:n-1) - dintxi_syscor(1:n-1,i1,i2,iz-1)
             if(.not.avg_counts) then
               chisqs_syscor(i1,i2,iz-1) = chisqs_syscor(i1,i2,iz-1) + &
-            	chisq_cov_xbar(dintxi(1:n-1), covmats(i1,i2,iz-1)%A, n-1)/dble(numomwstds)*DAHweights(iomwstds,iz)/factm2
+                    chisq_cov_xbar(dintxi(1:n-1), covmats(i1,i2,iz-1)%A, n-1)/dble(numomwstds)*DAHweights(iomwstds,iz)/factm2
             else
               chisqs_syscor(i1,i2,iz-1) =  &
-            	chisq_cov_xbar(dintxi(1:n-1), covmats(i1,i2,iz-1)%A, n-1)/factm2
+                    chisq_cov_xbar(dintxi(1:n-1), covmats(i1,i2,iz-1)%A, n-1)/factm2
             endif
             chisqs_syscor_all(iz-1)   = chisqs_syscor_all(iz-1) + chisqs_syscor(i1,i2,iz-1) / dble(N1*N2)
             if(debug_calcchisq .and. mubins(i1).eq.25 .and.i2.eq.1) then
-          	print *, 'dintxi_sys = ', dintxi_syscor(1:n-1,i1,i2,iz-1)
-          	print *, 'dintxi (after syscor) = ', dintxi(1:n-1)
-          	!print *, 'invcov = ', real(covmats(i1,i2,iz-1)%A)
-          	print *, 'chisq / chisq_syscor = ', chisqs_nosyscor(i1,i2,iz-1), chisqs_syscor(i1,i2,iz-1)
+                  print *, 'dintxi_sys = ', dintxi_syscor(1:n-1,i1,i2,iz-1)
+                  print *, 'dintxi (after syscor) = ', dintxi(1:n-1)
+                  !print *, 'invcov = ', real(covmats(i1,i2,iz-1)%A)
+                  print *, 'chisq / chisq_syscor = ', chisqs_nosyscor(i1,i2,iz-1), chisqs_syscor(i1,i2,iz-1)
             endif
           enddo!do iomwstds = 1, numomwstds
         enddo!do iz = 2, nz
@@ -2551,15 +2555,15 @@ contains
         endif
         do iz = 1, nz
             if(.not.numgal_weighted) then
-	            DAstds(iz,iomwstds) = DAz_wcdm(parstd,zeffs(iz)); Hstds(iz,iomwstds) = Hz_wcdm(parstd,zeffs(iz))
-	    else
-          	    DAarray = DAvalues(1:numgal_nbin)*redbin_weights(iz,1:numgal_nbin)
-          	    Harray  = Hvalues(1:numgal_nbin) *redbin_weights(iz,1:numgal_nbin)
-          	    DAstds(iz,iomwstds) = sum(DAarray(1:numgal_nbin)) / sum(redbin_weights(iz,1:numgal_nbin))
-          	    Hstds(iz,iomwstds)  = sum(Harray(1:numgal_nbin))  / sum(redbin_weights(iz,1:numgal_nbin))
-          	    !print *, parstd%omegam, parstd%w
-          	    !print *, 'DAs:', DAstds(iz,iomwstds), DAz_wcdm(parstd,zeffs(iz))
-          	    !print *, 'Hs:',  Hstds(iz,iomwstds),  Hz_wcdm(parstd,zeffs(iz))
+                    DAstds(iz,iomwstds) = DAz_wcdm(parstd,zeffs(iz)); Hstds(iz,iomwstds) = Hz_wcdm(parstd,zeffs(iz))
+            else
+                      DAarray = DAvalues(1:numgal_nbin)*redbin_weights(iz,1:numgal_nbin)
+                      Harray  = Hvalues(1:numgal_nbin) *redbin_weights(iz,1:numgal_nbin)
+                      DAstds(iz,iomwstds) = sum(DAarray(1:numgal_nbin)) / sum(redbin_weights(iz,1:numgal_nbin))
+                      Hstds(iz,iomwstds)  = sum(Harray(1:numgal_nbin))  / sum(redbin_weights(iz,1:numgal_nbin))
+                      !print *, parstd%omegam, parstd%w
+                      !print *, 'DAs:', DAstds(iz,iomwstds), DAz_wcdm(parstd,zeffs(iz))
+                      !print *, 'Hs:',  Hstds(iz,iomwstds),  Hz_wcdm(parstd,zeffs(iz))
             endif
        enddo
      enddo
@@ -2583,7 +2587,7 @@ contains
       do iomwstds = 1, numomwstds
       do iz = 1, nz
         call ximu_loadsmufile(data2pcffile_base(iz,omstds(iomwstds),wstds(iomwstds)), smutabstds(:,:,:,iz,iomwstds), &
-      	  smax_database, nbins_database, mubins_database)
+                smax_database, nbins_database, mubins_database)
       enddo
       enddo
       smutabstds_inited =.true.
@@ -2616,55 +2620,55 @@ contains
         deltas1 = smax_database / float(nbins_database) 
         deltas2 = smax_data / float(nbins_data)
 !       print *, ' (smu_ximu_CalcOmWChisqs) Do DSMapping... iz = ', iz
-	if(.not.avg_counts) then
-	  parstd%omegam = omstds(iomwstds); parstd%w = wstds(iomwstds)
+        if(.not.avg_counts) then
+          parstd%omegam = omstds(iomwstds); parstd%w = wstds(iomwstds)
           !DAstd = DAz_wcdm(parstd,zeffs(iz)); Hstd = Hz_wcdm(parstd,zeffs(iz))
           DAstd=DAstds(iz,iomwstds); Hstd=Hstds(iz,iomwstds)
           DAnew = DAs(iz); Hnew = Hs(iz)
           call DSMapping(smutabstds(:,:,:,iz,iomwstds), nbins_database, mubins_database, smutab_data, &
-	    nbins_data, mubins_data, DAstd, DAnew, Hstd, Hnew, deltas1,  deltas2,  smin_mapping, smax_mapping)
-	else
-	  ! in case of avg_counts, sum up all smutabstds to build one
-	  DAnew = DAs(iz); Hnew = Hs(iz)
-	  smutab_data = 0.0_rt
-	  do iomwstds2 = 1, numomwstds
-	    parstd%omegam = omstds(iomwstds2); parstd%w = wstds(iomwstds2)
+            nbins_data, mubins_data, DAstd, DAnew, Hstd, Hnew, deltas1,  deltas2,  smin_mapping, smax_mapping)
+        else
+          ! in case of avg_counts, sum up all smutabstds to build one
+          DAnew = DAs(iz); Hnew = Hs(iz)
+          smutab_data = 0.0_rt
+          do iomwstds2 = 1, numomwstds
+            parstd%omegam = omstds(iomwstds2); parstd%w = wstds(iomwstds2)
             !DAstd = DAz_wcdm(parstd,zeffs(iz)); Hstd = Hz_wcdm(parstd,zeffs(iz))
             DAstd=DAstds(iz,iomwstds); Hstd=Hstds(iz,iomwstds)
             call DSMapping(smutabstds(:,:,:,iz,iomwstds2), nbins_database, mubins_database, smutab_data1, &
-	      nbins_data, mubins_data, DAstd, DAnew, Hstd, Hnew, deltas1,  deltas2,  smin_mapping, smax_mapping)
-	    smutab_data(:,:,:) = smutab_data(:,:,:) + &
-	      smutab_data1(:,:,:) * DAHweights(iomwstds2,iz) / dble(numomwstds)
-	  enddo
-	endif
+              nbins_data, mubins_data, DAstd, DAnew, Hstd, Hnew, deltas1,  deltas2,  smin_mapping, smax_mapping)
+            smutab_data(:,:,:) = smutab_data(:,:,:) + &
+              smutab_data1(:,:,:) * DAHweights(iomwstds2,iz) / dble(numomwstds)
+          enddo
+        endif
 !       print *, ' (smu_ximu_CalcDAHChisqs) DSMapping done: iz = ', iz
         if(debug_calcchisq ) then !.and. mubins(i).eq.25 .and.j.eq.1
-        	print *, '####################################'
-        	print *, 'iz = ',iz
-		print *, "Checking: DAstd, DAnew, Hstd, Hnew = ", DAstd, DAnew, Hstd, Hnew
-		do i = 1, 15
-		  j = 1
-		  print *, i, smutab_data(i,j,1:3), (smutab_data(i,j,1)-2*smutab_data(i,j,2))/smutab_data(i,j,3)+1.0_rt
-		enddo	
+                print *, '####################################'
+                print *, 'iz = ',iz
+                print *, "Checking: DAstd, DAnew, Hstd, Hnew = ", DAstd, DAnew, Hstd, Hnew
+                do i = 1, 15
+                  j = 1
+                  print *, i, smutab_data(i,j,1:3), (smutab_data(i,j,1)-2*smutab_data(i,j,2))/smutab_data(i,j,3)+1.0_rt
+                enddo        
         endif
         
         do i1 = 1, N1
         do i2 = 1, N2
 !         print *, ' (smu_ximu_CalcDAHChisqs) Compute \int xi...'
-	  call XiFun(smutab_data, deltas2, nbins_data, mubins_data, &
-	    anglemin=1.0_rt-mucuts(i2), anglemax=1.0_rt, &
-	    smin=ints1, smax=ints2, &
-	    nummuedge=mubins(i1)+1, &
-	    intxi=intxi(1:mubins(i1)))
+          call XiFun(smutab_data, deltas2, nbins_data, mubins_data, &
+            anglemin=1.0_rt-mucuts(i2), anglemax=1.0_rt, &
+            smin=ints1, smax=ints2, &
+            nummuedge=mubins(i1)+1, &
+            intxi=intxi(1:mubins(i1)))
 !         print *, ' (smu_ximu_CalcDAHChisqs) Normalize \int xi...'
-	  call normfun(intxi(1:mubins(i1)),mubins(i1),intxis(1:mubins(i1)-1,i1,i2,iz,iomwstds)) 
-	  if(debug_calcchisq .and. i1.eq.1 .and.i2.eq.1) then
-	  	print *, 'intxi = ', real(intxi(1:mubins(i1)))
-		print *
-		print *, 'intxi (normed) = ', real(intxis(1:mubins(i1)-1,i1,i2,iz,iomwstds))
-	  endif
-	enddo!        do i1 = 1, N1
-	enddo!        do i2 = 1, N2
+          call normfun(intxi(1:mubins(i1)),mubins(i1),intxis(1:mubins(i1)-1,i1,i2,iz,iomwstds)) 
+          if(debug_calcchisq .and. i1.eq.1 .and.i2.eq.1) then
+                  print *, 'intxi = ', real(intxi(1:mubins(i1)))
+                print *
+                print *, 'intxi (normed) = ', real(intxis(1:mubins(i1)-1,i1,i2,iz,iomwstds))
+          endif
+        enddo!        do i1 = 1, N1
+        enddo!        do i2 = 1, N2
 !       print *, ' (smu_ximu_CalcDAHChisqs) Compute intxi done: iz = ', iz
       enddo!      do iz  = 1, nz
     enddo!do iomwstds = 1, numomwstds
@@ -2680,41 +2684,41 @@ contains
           n = mubins(i1)
           ! Loop for omstd/wstd
           do iomwstds = 1, numomwstds
-	    if(avg_counts.and.iomwstds.gt.1) cycle
-	    ! chisq before sys cor
+            if(avg_counts.and.iomwstds.gt.1) cycle
+            ! chisq before sys cor
             if(.not.NBComp) then
               dintxi(1:n-1) = intxis(1:n-1,i1,i2,iz,iomwstds) - intxis(1:n-1,i1,i2,1,iomwstds)
             else
               dintxi(1:n-1) = intxis(1:n-1,i1,i2,iz,iomwstds) - intxis(1:n-1,i1,i2,iz-1,iomwstds)
             endif
             if(debug_calcchisq .and. mubins(i1).eq.25 .and.i2.eq.1) then
-            	print *, 'iz = ', iz
-          	print *
-          	print *, 'dintxi = ', dintxi(1:n-1)
+                    print *, 'iz = ', iz
+                  print *
+                  print *, 'dintxi = ', dintxi(1:n-1)
             endif
             if(.not.avg_counts) then
               chisqs_nosyscor(i1,i2,iz-1) = chisqs_nosyscor(i1,i2,iz-1) + &
-          	chisq_cov_xbar(dintxi(1:n-1), covmats(i1,i2,iz-1)%A, n-1)/dble(numomwstds)*DAHweights(iomwstds,iz)/factm2
+                  chisq_cov_xbar(dintxi(1:n-1), covmats(i1,i2,iz-1)%A, n-1)/dble(numomwstds)*DAHweights(iomwstds,iz)/factm2
             else
               chisqs_nosyscor(i1,i2,iz-1) = &
-          	chisq_cov_xbar(dintxi(1:n-1), covmats(i1,i2,iz-1)%A, n-1)/factm2
+                  chisq_cov_xbar(dintxi(1:n-1), covmats(i1,i2,iz-1)%A, n-1)/factm2
             endif
             chisqs_nosyscor_all(iz-1) = chisqs_nosyscor_all(iz-1) + chisqs_nosyscor(i1,i2,iz-1)/ dble(N1*N2)
-	    ! chisq after sys cor
+            ! chisq after sys cor
             dintxi(1:n-1) = dintxi(1:n-1) - dintxi_syscor(1:n-1,i1,i2,iz-1)
             if(.not.avg_counts) then
               chisqs_syscor(i1,i2,iz-1) = chisqs_syscor(i1,i2,iz-1) + &
-            	chisq_cov_xbar(dintxi(1:n-1), covmats(i1,i2,iz-1)%A, n-1)/dble(numomwstds)*DAHweights(iomwstds,iz)/factm2
+                    chisq_cov_xbar(dintxi(1:n-1), covmats(i1,i2,iz-1)%A, n-1)/dble(numomwstds)*DAHweights(iomwstds,iz)/factm2
             else
               chisqs_syscor(i1,i2,iz-1) =  &
-            	chisq_cov_xbar(dintxi(1:n-1), covmats(i1,i2,iz-1)%A, n-1)/factm2
+                    chisq_cov_xbar(dintxi(1:n-1), covmats(i1,i2,iz-1)%A, n-1)/factm2
             endif
             chisqs_syscor_all(iz-1)   = chisqs_syscor_all(iz-1) + chisqs_syscor(i1,i2,iz-1) / dble(N1*N2)
             if(debug_calcchisq .and. mubins(i1).eq.25 .and.i2.eq.1) then
-          	print *, 'dintxi_sys = ', dintxi_syscor(1:n-1,i1,i2,iz-1)
-          	print *, 'dintxi (after syscor) = ', dintxi(1:n-1)
-          	!print *, 'invcov = ', real(covmats(i1,i2,iz-1)%A)
-          	print *, 'chisq / chisq_syscor = ', chisqs_nosyscor(i1,i2,iz-1), chisqs_syscor(i1,i2,iz-1)
+                  print *, 'dintxi_sys = ', dintxi_syscor(1:n-1,i1,i2,iz-1)
+                  print *, 'dintxi (after syscor) = ', dintxi(1:n-1)
+                  !print *, 'invcov = ', real(covmats(i1,i2,iz-1)%A)
+                  print *, 'chisq / chisq_syscor = ', chisqs_nosyscor(i1,i2,iz-1), chisqs_syscor(i1,i2,iz-1)
             endif
           enddo!do iomwstds = 1, numomwstds
         enddo!do iz = 2, nz
@@ -2849,15 +2853,15 @@ contains
         endif
         do iz = 1, nz
             if(.not.numgal_weighted) then
-	            DAstds(iz,iomwstds) = DAz_wcdm(parstd,zeffs(iz)); Hstds(iz,iomwstds) = Hz_wcdm(parstd,zeffs(iz))
-	    else
-          	    DAarray = DAvalues(1:numgal_nbin)*redbin_weights(iz,1:numgal_nbin)
-          	    Harray  = Hvalues(1:numgal_nbin) *redbin_weights(iz,1:numgal_nbin)
-          	    DAstds(iz,iomwstds) = sum(DAarray(1:numgal_nbin)) / sum(redbin_weights(iz,1:numgal_nbin))
-          	    Hstds(iz,iomwstds)  = sum(Harray(1:numgal_nbin))  / sum(redbin_weights(iz,1:numgal_nbin))
-          	    !print *, parstd%omegam, parstd%w
-          	    !print *, 'DAs:', DAstds(iz,iomwstds), DAz_wcdm(parstd,zeffs(iz))
-          	    !print *, 'Hs:',  Hstds(iz,iomwstds),  Hz_wcdm(parstd,zeffs(iz))
+                    DAstds(iz,iomwstds) = DAz_wcdm(parstd,zeffs(iz)); Hstds(iz,iomwstds) = Hz_wcdm(parstd,zeffs(iz))
+            else
+                      DAarray = DAvalues(1:numgal_nbin)*redbin_weights(iz,1:numgal_nbin)
+                      Harray  = Hvalues(1:numgal_nbin) *redbin_weights(iz,1:numgal_nbin)
+                      DAstds(iz,iomwstds) = sum(DAarray(1:numgal_nbin)) / sum(redbin_weights(iz,1:numgal_nbin))
+                      Hstds(iz,iomwstds)  = sum(Harray(1:numgal_nbin))  / sum(redbin_weights(iz,1:numgal_nbin))
+                      !print *, parstd%omegam, parstd%w
+                      !print *, 'DAs:', DAstds(iz,iomwstds), DAz_wcdm(parstd,zeffs(iz))
+                      !print *, 'Hs:',  Hstds(iz,iomwstds),  Hz_wcdm(parstd,zeffs(iz))
             endif
        enddo
     enddo
@@ -2879,7 +2883,7 @@ contains
       do iomwstds = 1, numomwstds
       do iz = 1, nz
         call ximu_loadsmufile(data2pcffile_base(iz,omstds(iomwstds),wstds(iomwstds)), smutabstds(:,:,:,iz,iomwstds), &
-      	  smax_database, nbins_database, mubins_database)
+                smax_database, nbins_database, mubins_database)
       enddo
       enddo
       smutabstds_inited =.true.
@@ -2900,7 +2904,7 @@ contains
             DAHweights(iomwstds,iz) = DAHweights(iomwstds,iz) * numomwstds / sumDAHweights
           enddo
         enddo
-	print *, 'ERROR (smu_ximu_CalcDAHChisqs_bigcov):  DAHweights not supported in bigcovmat!'; stop
+        print *, 'ERROR (smu_ximu_CalcDAHChisqs_bigcov):  DAHweights not supported in bigcovmat!'; stop
     else
         DAHweights = 1.0_rt
     endif
@@ -2913,55 +2917,55 @@ contains
           deltas1 = smax_database / float(nbins_database) 
           deltas2 = smax_data / float(nbins_data)
 !         print *, ' (smu_ximu_CalcOmWChisqs) Do DSMapping... iz = ', iz
-	  if(.not.avg_counts) then
-	    parstd%omegam = omstds(iomwstds); parstd%w = wstds(iomwstds)
+          if(.not.avg_counts) then
+            parstd%omegam = omstds(iomwstds); parstd%w = wstds(iomwstds)
             !DAstd = DAz_wcdm(parstd,zeffs(iz)); Hstd = Hz_wcdm(parstd,zeffs(iz))
             DAstd=DAstds(iz,iomwstds); Hstd=Hstds(iz,iomwstds)
             DAnew = DAs(iz); Hnew = Hs(iz)
             call DSMapping(smutabstds(:,:,:,iz,iomwstds), nbins_database, mubins_database, smutab_data, &
-	      nbins_data, mubins_data, DAstd, DAnew, Hstd, Hnew, deltas1,  deltas2,  smin_mapping, smax_mapping)
-	  else
-	    ! in case of avg_counts, sum up all smutabstds to build one
-	    DAnew = DAs(iz); Hnew = Hs(iz)
-	    smutab_data = 0.0_rt
-	    do iomwstds2 = 1, numomwstds
-	      parstd%omegam = omstds(iomwstds2); parstd%w = wstds(iomwstds2)
+              nbins_data, mubins_data, DAstd, DAnew, Hstd, Hnew, deltas1,  deltas2,  smin_mapping, smax_mapping)
+          else
+            ! in case of avg_counts, sum up all smutabstds to build one
+            DAnew = DAs(iz); Hnew = Hs(iz)
+            smutab_data = 0.0_rt
+            do iomwstds2 = 1, numomwstds
+              parstd%omegam = omstds(iomwstds2); parstd%w = wstds(iomwstds2)
               !DAstd = DAz_wcdm(parstd,zeffs(iz)); Hstd = Hz_wcdm(parstd,zeffs(iz))
               DAstd=DAstds(iz,iomwstds); Hstd=Hstds(iz,iomwstds)
               call DSMapping(smutabstds(:,:,:,iz,iomwstds2), nbins_database, mubins_database, smutab_data1, &
-	        nbins_data, mubins_data, DAstd, DAnew, Hstd, Hnew, deltas1,  deltas2,  smin_mapping, smax_mapping)
-	      smutab_data(:,:,:) = smutab_data(:,:,:) + &
-	        smutab_data1(:,:,:) * DAHweights(iomwstds2,iz) / dble(numomwstds)
-	    enddo
-	  endif
+                nbins_data, mubins_data, DAstd, DAnew, Hstd, Hnew, deltas1,  deltas2,  smin_mapping, smax_mapping)
+              smutab_data(:,:,:) = smutab_data(:,:,:) + &
+                smutab_data1(:,:,:) * DAHweights(iomwstds2,iz) / dble(numomwstds)
+            enddo
+          endif
 !         print *, ' (smu_ximu_CalcDAHChisqs) DSMapping done: iz = ', iz
           if(debug_calcchisq ) then !.and. mubins(i).eq.25 .and.j.eq.1
-        	print *, '####################################'
-        	print *, 'iz = ',iz
-		print *, "Checking: DAstd, DAnew, Hstd, Hnew = ", DAstd, DAnew, Hstd, Hnew
-		do i = 1, 15
-		  j = 1
-		  print *, i, smutab_data(i,j,1:3), (smutab_data(i,j,1)-2*smutab_data(i,j,2))/smutab_data(i,j,3)+1.0_rt
-		enddo	
+                print *, '####################################'
+                print *, 'iz = ',iz
+                print *, "Checking: DAstd, DAnew, Hstd, Hnew = ", DAstd, DAnew, Hstd, Hnew
+                do i = 1, 15
+                  j = 1
+                  print *, i, smutab_data(i,j,1:3), (smutab_data(i,j,1)-2*smutab_data(i,j,2))/smutab_data(i,j,3)+1.0_rt
+                enddo        
           endif
         
           do i1 = 1, N1
           do i2 = 1, N2
 !           print *, ' (smu_ximu_CalcDAHChisqs) Compute \int xi...'
-	    call XiFun(smutab_data, deltas2, nbins_data, mubins_data, &
-	      anglemin=1.0_rt-mucuts(i2), anglemax=1.0_rt, &
-	      smin=ints1, smax=ints2, &
-	      nummuedge=mubins(i1)+1, &
-	      intxi=intxi(1:mubins(i1)))
+            call XiFun(smutab_data, deltas2, nbins_data, mubins_data, &
+              anglemin=1.0_rt-mucuts(i2), anglemax=1.0_rt, &
+              smin=ints1, smax=ints2, &
+              nummuedge=mubins(i1)+1, &
+              intxi=intxi(1:mubins(i1)))
 !           print *, ' (smu_ximu_CalcDAHChisqs) Normalize \int xi...'
-	    call normfun(intxi(1:mubins(i1)),mubins(i1),intxis(1:mubins(i1)-1,i1,i2,iz,iomwstds)) 
-	    if(debug_calcchisq .and. i1.eq.1 .and.i2.eq.1) then
-	   	print *, 'intxi = ', real(intxi(1:mubins(i1)))
-		print *
-		print *, 'intxi (normed) = ', real(intxis(1:mubins(i1)-1,i1,i2,iz,iomwstds))
-	    endif
-	  enddo!        do i1 = 1, N1
-	  enddo!        do i2 = 1, N2
+            call normfun(intxi(1:mubins(i1)),mubins(i1),intxis(1:mubins(i1)-1,i1,i2,iz,iomwstds)) 
+            if(debug_calcchisq .and. i1.eq.1 .and.i2.eq.1) then
+                   print *, 'intxi = ', real(intxi(1:mubins(i1)))
+                print *
+                print *, 'intxi (normed) = ', real(intxis(1:mubins(i1)-1,i1,i2,iz,iomwstds))
+            endif
+          enddo!        do i1 = 1, N1
+          enddo!        do i2 = 1, N2
 !         print *, ' (smu_ximu_CalcDAHChisqs) Compute intxi done: iz = ', iz
         enddo!      do iz  = 1, nz
       enddo!do iomwstds = 1, numomwstds
@@ -2983,66 +2987,66 @@ contains
             n = mubins(i1)
             ! Loop for omstd/wstd
             do iomwstds = 1, numomwstds
-	      if(avg_counts.and.iomwstds.gt.1) cycle
-	      ! chisq before sys cor
-	      do iz = 2, nz
+              if(avg_counts.and.iomwstds.gt.1) cycle
+              ! chisq before sys cor
+              do iz = 2, nz
                 if(.not.NBComp) then
                   dintxi(1:n-1) = intxis(1:n-1,i1,i2,iz,iomwstds) - intxis(1:n-1,i1,i2,1,iomwstds)
                 else 
                   dintxi(1:n-1) = intxis(1:n-1,i1,i2,iz,iomwstds) - intxis(1:n-1,i1,i2,iz-1,iomwstds)
                 endif
-	        if(iz.eq.exclude_bin) dintxi = 0.0 ! xiaodong: exclude last bin!!!
-	        dintxi_big((iz-2)*(n-1)+1:(iz-1)*(n-1)) = dintxi(1:n-1)
-	      enddo
+                if(iz.eq.exclude_bin) dintxi = 0.0 ! xiaodong: exclude last bin!!!
+                dintxi_big((iz-2)*(n-1)+1:(iz-1)*(n-1)) = dintxi(1:n-1)
+              enddo
               if(.not.avg_counts) then
                 chisqs_nosyscor(i1,i2) = chisqs_nosyscor(i1,i2) + &
-          	  chisq_cov_xbar(dintxi_big(1:(nz-1)*(n-1)), bigcovmats(i1,i2)%A, (nz-1)*(n-1))/dble(numomwstds)/factm2
+                    chisq_cov_xbar(dintxi_big(1:(nz-1)*(n-1)), bigcovmats(i1,i2)%A, (nz-1)*(n-1))/dble(numomwstds)/factm2
               else
                 chisqs_nosyscor(i1,i2) = &
-          	  chisq_cov_xbar(dintxi_big(1:(nz-1)*(n-1)), bigcovmats(i1,i2)%A, (nz-1)*(n-1))/factm2
+                    chisq_cov_xbar(dintxi_big(1:(nz-1)*(n-1)), bigcovmats(i1,i2)%A, (nz-1)*(n-1))/factm2
               endif
               chisqs_nosyscor_all = chisqs_nosyscor_all + chisqs_nosyscor(i1,i2)/ dble(N1*N2)
               !print *
               !print *, 'dintxi = ', dintxi_big(1:(nz-1)*(n-1))
-	      !open(unit=100,file='dintxi.txt'); write(100,*) dintxi_big(1:(nz-1)*(n-1)); close(100); 
-	      !print *, '1,nz,n=',1,nz,n
-	      !print *, '(nz-1)*(n-1) = ', (nz-1)*(n-1)
-	      !print *, 'bigcovmats(i1,i2)%A = ', bigcovmats(i1,i2)%A
-	      !print *, 'chisqs_nosyscor(i1,i2) = ', chisq_cov_xbar(dintxi_big(1:(nz-1)*(n-1)), bigcovmats(i1,i2)%A, (nz-1)*(n-1))
-	      !print *, 'n1, n2, factm2 = ', n1,n2,factm2
-	      !print *, 'iomwstds,iz = ', iomwstds,iz
-	      !print *, 'DAHweights(iomwstds,iz) = ', DAHweights(iomwstds,iz)
-	      !stop
-	      ! chisq after sys cor
-	      do iz = 2, nz
+              !open(unit=100,file='dintxi.txt'); write(100,*) dintxi_big(1:(nz-1)*(n-1)); close(100); 
+              !print *, '1,nz,n=',1,nz,n
+              !print *, '(nz-1)*(n-1) = ', (nz-1)*(n-1)
+              !print *, 'bigcovmats(i1,i2)%A = ', bigcovmats(i1,i2)%A
+              !print *, 'chisqs_nosyscor(i1,i2) = ', chisq_cov_xbar(dintxi_big(1:(nz-1)*(n-1)), bigcovmats(i1,i2)%A, (nz-1)*(n-1))
+              !print *, 'n1, n2, factm2 = ', n1,n2,factm2
+              !print *, 'iomwstds,iz = ', iomwstds,iz
+              !print *, 'DAHweights(iomwstds,iz) = ', DAHweights(iomwstds,iz)
+              !stop
+              ! chisq after sys cor
+              do iz = 2, nz
                 if(.not.NBComp) then
                   dintxi(1:n-1) = intxis(1:n-1,i1,i2,iz,iomwstds) - intxis(1:n-1,i1,i2,1,iomwstds)
                 else
                   dintxi(1:n-1) = intxis(1:n-1,i1,i2,iz,iomwstds) - intxis(1:n-1,i1,i2,iz-1,iomwstds)
                 endif
-	        !if(i1.eq.1.and.i2.eq.1) write(*,*) '(CalcDAHChisqs, dintxi):',iz, dintxi(1:n-1) !selfsyscor_debug
+                !if(i1.eq.1.and.i2.eq.1) write(*,*) '(CalcDAHChisqs, dintxi):',iz, dintxi(1:n-1) !selfsyscor_debug
                 dintxi(1:n-1) = dintxi(1:n-1) - dintxi_syscor(1:n-1,i1,i2,iz-1)
-	        if(iz.eq.exclude_bin) dintxi = 0.0 ! xiaodong: exclude last bin!!!
-	        dintxi_big((iz-2)*(n-1)+1:(iz-1)*(n-1)) = dintxi(1:n-1)
-	      enddo
+                if(iz.eq.exclude_bin) dintxi = 0.0 ! xiaodong: exclude last bin!!!
+                dintxi_big((iz-2)*(n-1)+1:(iz-1)*(n-1)) = dintxi(1:n-1)
+              enddo
               if(.not.avg_counts) then
                 chisqs_syscor(i1,i2) = chisqs_syscor(i1,i2) + &
-            	  chisq_cov_xbar(dintxi_big(1:(nz-1)*(n-1)), bigcovmats(i1,i2)%A, (nz-1)*(n-1))/dble(numomwstds)/factm2!*DAHweights(iomwstds,iz)
+                      chisq_cov_xbar(dintxi_big(1:(nz-1)*(n-1)), bigcovmats(i1,i2)%A, (nz-1)*(n-1))/dble(numomwstds)/factm2!*DAHweights(iomwstds,iz)
               else
                 chisqs_syscor(i1,i2) =  &
-            	  chisq_cov_xbar(dintxi_big(1:(nz-1)*(n-1)), bigcovmats(i1,i2)%A, (nz-1)*(n-1))/factm2
+                      chisq_cov_xbar(dintxi_big(1:(nz-1)*(n-1)), bigcovmats(i1,i2)%A, (nz-1)*(n-1))/factm2
               endif
               chisqs_syscor_all   = chisqs_syscor_all + chisqs_syscor(i1,i2) / dble(N1*N2)
 
               if(debug_calcchisq .and. mubins(i1).eq.25 .and.i2.eq.1) then
-		do iz = 2, nz
-            	  print *, 'iz = ', iz
-	  	  print *, 'dintxi_sys = ', dintxi_syscor(1:n-1,i1,i2,iz-1)
-          	  print *, 'dintxi (after syscor) = ', dintxi(1:n-1)
-          	!print *, 'invcov = ', real(covmats(i1,i2,iz-1)%A)
-		enddo
-          	print *, 'chisq / chisq_syscor = ', chisqs_nosyscor(i1,i2), chisqs_syscor(i1,i2)	
-	      endif
+                do iz = 2, nz
+                      print *, 'iz = ', iz
+                    print *, 'dintxi_sys = ', dintxi_syscor(1:n-1,i1,i2,iz-1)
+                    print *, 'dintxi (after syscor) = ', dintxi(1:n-1)
+                  !print *, 'invcov = ', real(covmats(i1,i2,iz-1)%A)
+                enddo
+                  print *, 'chisq / chisq_syscor = ', chisqs_nosyscor(i1,i2), chisqs_syscor(i1,i2)        
+              endif
             enddo!do iomwstds = 1, numomwstds
  !         enddo!do iz = 2, nz
 
@@ -3151,7 +3155,7 @@ contains
       print *, ' (smu_ximu_CalcDAHChisqs_bigcov) Load in the xi(s,mu) of baseline cosmologies...'
       do iz = 1, nz
         call ximu_loadsmufile(data2pcffile_base(iz,omstd,wstd), smutabstds(:,:,:,iz,1), &
-      	  smax_database, nbins_database, mubins_database)
+                smax_database, nbins_database, mubins_database)
       enddo
       smutabstds_inited =.true.
     endif
@@ -3169,38 +3173,38 @@ contains
           DAnew = DAs(iz);   Hnew = Hs(iz)
 !          print *, 'DAstd, Hstd, DAnew, Hnew = ', DAstd, Hstd, DAnew, Hnew
 !          call DSMapping(smutabstds(:,:,:,iz,1), nbins_database, mubins_database, smutab_data, &
-!	      nbins_data, mubins_data, DAstd, DAnew, Hstd, Hnew, deltas1,  deltas2,  smin_mapping, smax_mapping)
+!              nbins_data, mubins_data, DAstd, DAnew, Hstd, Hnew, deltas1,  deltas2,  smin_mapping, smax_mapping)
           ! Very important! always using first bin as reference...
           call DSMapping(smutabstds(:,:,:,1,1), nbins_database, mubins_database, smutab_data, &
-	      nbins_data, mubins_data, DAstd, DAnew, Hstd, Hnew, deltas1,  deltas2,  smin_mapping, smax_mapping)
+              nbins_data, mubins_data, DAstd, DAnew, Hstd, Hnew, deltas1,  deltas2,  smin_mapping, smax_mapping)
 !         print *, ' (smu_ximu_CalcDAHChisqs) DSMapping done: iz = ', iz
           if(debug_calcchisq ) then !.and. mubins(i).eq.25 .and.j.eq.1
-        	print *, '####################################'
-        	print *, 'iz = ',iz
-		print *, "Checking: DAstd, DAnew, Hstd, Hnew = ", DAstd, DAnew, Hstd, Hnew
-		do i = 1, 15
-		  j = 1
-		  print *, i, smutab_data(i,j,1:3), (smutab_data(i,j,1)-2*smutab_data(i,j,2))/smutab_data(i,j,3)+1.0_rt
-		enddo	
+                print *, '####################################'
+                print *, 'iz = ',iz
+                print *, "Checking: DAstd, DAnew, Hstd, Hnew = ", DAstd, DAnew, Hstd, Hnew
+                do i = 1, 15
+                  j = 1
+                  print *, i, smutab_data(i,j,1:3), (smutab_data(i,j,1)-2*smutab_data(i,j,2))/smutab_data(i,j,3)+1.0_rt
+                enddo        
           endif
         
           do i1 = 1, N1
           do i2 = 1, N2
 !           print *, ' (smu_ximu_CalcDAHChisqs) Compute \int xi...'
-	    call XiFun(smutab_data, deltas2, nbins_data, mubins_data, &
-	      anglemin=1.0_rt-mucuts(i2), anglemax=1.0_rt, &
-	      smin=ints1, smax=ints2, &
-	      nummuedge=mubins(i1)+1, &
-	      intxi=intxi(1:mubins(i1)))
+            call XiFun(smutab_data, deltas2, nbins_data, mubins_data, &
+              anglemin=1.0_rt-mucuts(i2), anglemax=1.0_rt, &
+              smin=ints1, smax=ints2, &
+              nummuedge=mubins(i1)+1, &
+              intxi=intxi(1:mubins(i1)))
 !           print *, ' (smu_ximu_CalcDAHChisqs) Normalize \int xi...'
-	    call normfun(intxi(1:mubins(i1)),mubins(i1),intxis(1:mubins(i1)-1,i1,i2,iz)) 
-	    if(debug_calcchisq .and. i1.eq.1 .and.i2.eq.1) then
-	   	print *, 'intxi = ', real(intxi(1:mubins(i1)))
-		print *
-		print *, 'intxi (normed) = ', real(intxis(1:mubins(i1)-1,i1,i2,iz))
-	    endif
-	  enddo!        do i1 = 1, N1
-	  enddo!        do i2 = 1, N2
+            call normfun(intxi(1:mubins(i1)),mubins(i1),intxis(1:mubins(i1)-1,i1,i2,iz)) 
+            if(debug_calcchisq .and. i1.eq.1 .and.i2.eq.1) then
+                   print *, 'intxi = ', real(intxi(1:mubins(i1)))
+                print *
+                print *, 'intxi (normed) = ', real(intxis(1:mubins(i1)-1,i1,i2,iz))
+            endif
+          enddo!        do i1 = 1, N1
+          enddo!        do i2 = 1, N2
 !         print *, ' (smu_ximu_CalcDAHChisqs) Compute intxi done: iz = ', iz
     enddo!      do iz  = 1, nzfc
 
@@ -3220,34 +3224,34 @@ contains
 !            endif
             n = mubins(i1)
             ! Loop for omstd/wstd
-	      ! chisq before sys cor
-	    do iz = 2, nzfc
+              ! chisq before sys cor
+            do iz = 2, nzfc
 !                if(.not.NBComp) then
 !                  dintxi(1:n-1) = intxis(1:n-1,i1,i2,iz) - intxis(1:n-1,i1,i2,1)
 !                else 
                 dintxi(1:n-1) = intxis(1:n-1,i1,i2,iz) - intxis(1:n-1,i1,i2,iz-1)
 !                endif
-	        if(iz.eq.exclude_bin) dintxi = 0.0 ! xiaodong: exclude last bin!!!
-	        dintxi_big((iz-2)*(n-1)+1:(iz-1)*(n-1)) = dintxi(1:n-1)
+                if(iz.eq.exclude_bin) dintxi = 0.0 ! xiaodong: exclude last bin!!!
+                dintxi_big((iz-2)*(n-1)+1:(iz-1)*(n-1)) = dintxi(1:n-1)
 !                if(i1.eq.1.and.i2.eq.1) print *, 'iz, dintxi = ', iz, real(dintxi)
-	    enddo
+            enddo
             chisqs_nosyscor(i1,i2) = chisqs_nosyscor(i1,i2) + &
-          	  chisq_cov_xbar(dintxi_big(1:(nzfc-1)*(n-1)), bigcovmatsfc(i1,i2)%A, (nzfc-1)*(n-1))/factm2
+                    chisq_cov_xbar(dintxi_big(1:(nzfc-1)*(n-1)), bigcovmatsfc(i1,i2)%A, (nzfc-1)*(n-1))/factm2
             print *, 'i1,i2,iz, chisq = ', i1,i2,iz, chisq_cov_xbar(dintxi_big(1:(nzfc-1)*(n-1)), bigcovmatsfc(i1,i2)%A, (nzfc-1)*(n-1))/factm2
             chisqs_nosyscor_all = chisqs_nosyscor_all + chisqs_nosyscor(i1,i2)/ dble(N1*N2)
-	    do iz = 2, nzfc
+            do iz = 2, nzfc
 !                if(.not.NBComp) then
 !                  dintxi(1:n-1) = intxis(1:n-1,i1,i2,iz) - intxis(1:n-1,i1,i2,1)
 !                else
                 dintxi(1:n-1) = intxis(1:n-1,i1,i2,iz) - intxis(1:n-1,i1,i2,iz-1)
 !                endif
-	        !if(i1.eq.1.and.i2.eq.1) write(*,*) '(CalcDAHChisqs, dintxi):',iz, dintxi(1:n-1) !selfsyscor_debug
+                !if(i1.eq.1.and.i2.eq.1) write(*,*) '(CalcDAHChisqs, dintxi):',iz, dintxi(1:n-1) !selfsyscor_debug
                 dintxi(1:n-1) = dintxi(1:n-1) - dintxi_syscor(1:n-1,i1,i2,iz-1)
-	        if(iz.eq.exclude_bin) dintxi = 0.0 ! xiaodong: exclude last bin!!!
-	        dintxi_big((iz-2)*(n-1)+1:(iz-1)*(n-1)) = dintxi(1:n-1)
-	    enddo
+                if(iz.eq.exclude_bin) dintxi = 0.0 ! xiaodong: exclude last bin!!!
+                dintxi_big((iz-2)*(n-1)+1:(iz-1)*(n-1)) = dintxi(1:n-1)
+            enddo
             chisqs_syscor(i1,i2) = chisqs_syscor(i1,i2) + &
-            	  chisq_cov_xbar(dintxi_big(1:(nzfc-1)*(n-1)), bigcovmatsfc(i1,i2)%A, (nzfc-1)*(n-1))/factm2
+                      chisq_cov_xbar(dintxi_big(1:(nzfc-1)*(n-1)), bigcovmatsfc(i1,i2)%A, (nzfc-1)*(n-1))/factm2
             chisqs_syscor_all   = chisqs_syscor_all + chisqs_syscor(i1,i2) / dble(N1*N2)
 
         enddo!do i1 = 1,N1
@@ -3359,12 +3363,12 @@ contains
     ! Set mode: whether use bigcovmat
     usebigcovmat = .false.
     if(present(use_bigcovmat)) then
-	if(use_bigcovmat) usebigcovmat=.true.
+        if(use_bigcovmat) usebigcovmat=.true.
     endif
 
     computecovmat = .false.
     if(present(compute_covmat)) then
-	if(compute_covmat) computecovmat=.true.
+        if(compute_covmat) computecovmat=.true.
     endif
    
     if(present(covmat_suffixstr)) then
@@ -3388,8 +3392,8 @@ contains
       print *, '(Begin) Load in necessary files.'
       if(usebigcovmat) then
         if(computecovmat) then
-	  print *, 'Compute/output big covmats...'; call calc_bigcovmats(); call output_bigcovmats(covmatsuffixstr)
-	endif
+          print *, 'Compute/output big covmats...'; call calc_bigcovmats(); call output_bigcovmats(covmatsuffixstr)
+        endif
         print *, '* Load in big covmats:'; call load_bigcovmats(covmatsuffixstr)
 
         print *, '* Invert big covmats:'; call invert_bigcovmats()
@@ -3400,11 +3404,11 @@ contains
         !enddo
         !enddo
         !close(1087)
-	!stop
+        !stop
       else
         if(computecovmat) then
-	  print *, 'Compute/output covmats...'; call calc_covmats(); call output_covmats(covmatsuffixstr)
-	endif
+          print *, 'Compute/output covmats...'; call calc_covmats(); call output_covmats(covmatsuffixstr)
+        endif
         print *, '* Load in covmats:'; call load_covmats(covmatsuffixstr)
         print *, '* Invert covmats:'; call invert_covmats()
       endif
@@ -3437,7 +3441,7 @@ contains
         chisqs_uncored(1), chisqs(1), & ! values of chisqs, averaged over all schemes, correction factor for covmat (D, m1, m2) considered
         weightedstds = .false., avg_counts = .false. &
         ) 
-	fact = (1.0/1.0) ! Correction factor due to finite size of Horizon Run 4 simulation (used as correction of systematics)
+        fact = (1.0/1.0) ! Correction factor due to finite size of Horizon Run 4 simulation (used as correction of systematics)
        !print *, sepchisqs_uncored_bigcov
        !print *, 'sepchisqs_uncored_bigcov'
        !stop
@@ -3592,7 +3596,7 @@ contains
 
     computecovmat = .false.
     if(present(compute_covmat)) then
-	if(compute_covmat) computecovmat=.true.
+        if(compute_covmat) computecovmat=.true.
     endif
    
     if(present(covmat_suffixstr)) then
@@ -3613,7 +3617,7 @@ contains
     if(.not.AP_inited) then
       print *, '(Begin) Load in necessary files.'
       if(computecovmat) then
-	print *, 'Compute/output big covmats...'; call calc_bigcovmats(); call output_bigcovmats(covmatsuffixstr)
+        print *, 'Compute/output big covmats...'; call calc_bigcovmats(); call output_bigcovmats(covmatsuffixstr)
       endif
       print *, '* Load in big covmats:'; call load_bigcovmats(covmatsuffixstr)
       print *, '* Init bigcovmatsfc:'; call init_bigcovmatsfc();
@@ -3735,118 +3739,118 @@ subroutine check_load_files()
         call ximu_loadsmufile(nowfile, smutab_database, smax_database, nbins_database, mubins_database)
         print *, trim(adjustl(nowfile))
         !call DSMapping(smutabstd, nums1, nummu1, smutab2, &
-	!  nums2, nummu2, DAstd, DAnew, Hstd, Hnew, deltas1,  deltas2,  smin_mapping, smax_mapping)
-	DAstd=DAz_wcdm(parstd,zeffs(iz))
-	DAnew=DAz_wcdm(parnew,zeffs(iz))
-	Hstd=Hz_wcdm(parstd,zeffs(iz))
-	Hnew=Hz_wcdm(parnew,zeffs(iz))
-	deltas1 = smax_database / float(nbins_database) 
-	deltas2 = smax_data / float(nbins_data)
-	!!############################################
-	!!############################################
-	!!############################################
-	!! Begin checking 
-	!!############################################
-	!!############################################
-	!!############################################
+        !  nums2, nummu2, DAstd, DAnew, Hstd, Hnew, deltas1,  deltas2,  smin_mapping, smax_mapping)
+        DAstd=DAz_wcdm(parstd,zeffs(iz))
+        DAnew=DAz_wcdm(parnew,zeffs(iz))
+        Hstd=Hz_wcdm(parstd,zeffs(iz))
+        Hnew=Hz_wcdm(parnew,zeffs(iz))
+        deltas1 = smax_database / float(nbins_database) 
+        deltas2 = smax_data / float(nbins_data)
+        !!############################################
+        !!############################################
+        !!############################################
+        !! Begin checking 
+        !!############################################
+        !!############################################
+        !!############################################
 
-	! 1. smutab_database
-	print *, '####################################'
-	print *, 'Checking of smutab_database:'
-	do i = 30, 31
-	  j = 100
-	  print *, i, smutab_database(i,j,1:3), (smutab_database(i,j,1)-2*smutab_database(i,j,2))/smutab_database(i,j,3)+1.0_rt
-	enddo
-	print *, ' python result is '
-	print *, ' 30 [  1.39243300e-09   4.03922200e-10   4.01837100e-10] 2.45479001317'
-	print *, ' 31 [  1.18845100e-09   4.70914000e-10   4.29971000e-10] 1.5735805438'
+        ! 1. smutab_database
+        print *, '####################################'
+        print *, 'Checking of smutab_database:'
+        do i = 30, 31
+          j = 100
+          print *, i, smutab_database(i,j,1:3), (smutab_database(i,j,1)-2*smutab_database(i,j,2))/smutab_database(i,j,3)+1.0_rt
+        enddo
+        print *, ' python result is '
+        print *, ' 30 [  1.39243300e-09   4.03922200e-10   4.01837100e-10] 2.45479001317'
+        print *, ' 31 [  1.18845100e-09   4.70914000e-10   4.29971000e-10] 1.5735805438'
 
-	! 2. DAs, Hs
-	print *, '####################################'
-	print *, "Checking: DAstd, DAnew, Hstd, Hnew = ", DAstd, DAnew, Hstd, Hnew
-	print *, ' python result is '
-	print *, ' ((507.9209000267865, 532.6121518748575, 109.85497398929201, 100.9493258918237)'
+        ! 2. DAs, Hs
+        print *, '####################################'
+        print *, "Checking: DAstd, DAnew, Hstd, Hnew = ", DAstd, DAnew, Hstd, Hnew
+        print *, ' python result is '
+        print *, ' ((507.9209000267865, 532.6121518748575, 109.85497398929201, 100.9493258918237)'
 
-	! DSMapping
-	print *, '####################################'
-	print *, 'Checking of smutab_database:'
-	call DSMapping(smutab_database, nbins_database, mubins_database, smutab_data, &
-	  nbins_data, mubins_data, DAstd, DAnew, Hstd, Hnew, deltas1,  deltas2,  smin_mapping, smax_mapping)
-	do i = 30, 31
-	  j = 1
-	  print *, i, smutab_data(i,j,1:3), (smutab_data(i,j,1)-2*smutab_data(i,j,2))/smutab_data(i,j,3)+1.0_rt
-	enddo
-	print *, ' python result is'
-	print *, '30 [2.1285943755830989e-07, 1.9963138302423669e-07, 1.9887429462126441e-07] 0.0627077830991'
-	print *, '31 [2.2624904340654802e-07, 2.1190150929401287e-07, 2.1199168691170416e-07] 0.0681050844047'
+        ! DSMapping
+        print *, '####################################'
+        print *, 'Checking of smutab_database:'
+        call DSMapping(smutab_database, nbins_database, mubins_database, smutab_data, &
+          nbins_data, mubins_data, DAstd, DAnew, Hstd, Hnew, deltas1,  deltas2,  smin_mapping, smax_mapping)
+        do i = 30, 31
+          j = 1
+          print *, i, smutab_data(i,j,1:3), (smutab_data(i,j,1)-2*smutab_data(i,j,2))/smutab_data(i,j,3)+1.0_rt
+        enddo
+        print *, ' python result is'
+        print *, '30 [2.1285943755830989e-07, 1.9963138302423669e-07, 1.9887429462126441e-07] 0.0627077830991'
+        print *, '31 [2.2624904340654802e-07, 2.1190150929401287e-07, 2.1199168691170416e-07] 0.0681050844047'
 
 
-	
-	!XiFun(smutab, deltas, nbins, mubins, anglemin, anglemax, smin, smax, nummuedge, intxi)
-	print *, '####################################'
-	print *, 'Checking of smutab_database:'
-	call XiFun(smutab_data, deltas2, nbins_data, mubins_data, 0.05_rt, 1.0_rt, 6.0_rt, 40.0_rt, 26, intxi(1:25))
-	print *, 'intxi = ', real(intxi(1:25))
-	print *, 'python result is '
-	print *, '[13.53979955829141, 12.888214311950264, 13.051479126899061, ...'
-	avg = sum(intxi(1:25)) / 25.0
-	intxi(1:25) = intxi(1:25) / avg
-	print *
-	print *, 'intxi (normed) = ', real(intxi(1:25))
-	print *, 'python result is '
-	print *, '[0.83193377117529554, 0.791898040299293, 0.80192961518456618,...'
-	
-	!systematic correction
-	call calc_syscor()
-	print *, '####################################'
-	print *, 'Checking of systematic correction:'
-	do i = 1, N1
-	do j = 1, N2
-	  if(mubins(i).eq.25 .and. j.eq.1) then
-	    print *, ' #-mubin, mucut = ', mubins(i), mucuts(j)
-	    print *, ' systematic correction @ 1,2-rd bins:'
-	    print *, real(dintxi_syscor(1:mubins(i)-1,i,j,1))!TMPTEST
-	    print *, ' python rlt = ', '2.267e-03 1.026e-02 -1.985e-02 ... -1.401e-03 -3.181e-03 '
-	    print *, ' systematic correction @ 1,6-rd bins:'
-	    print *, real(dintxi_syscor(1:mubins(i)-1,i,j,5))!TMPTEST
-	    print *, ' python rlt = ', '1.210e-01 7.030e-02 3.038e-02 ... -5.863e-02 -3.604e-02 '
-	  endif
-	enddo
-	enddo
-	
-	! Check of covmats...
-	if(.false.) then
-		call calc_covmats()
-		print *, '######################################'
-		print *, 'Checking of covmats: '
-		print *, 'Python result (Please run code of /home/xiaodongli/LSS/2PCF_AP/2.2.CheckFortran.ipynb): '
-!		print *, 'Python result (Please run code of /home/xue/workspace/APLike/2.2.CheckFortran.ipynb): '
-		print *, 'Maximal difference between the two matrice:  4.5039261036e-10'
-		print *, 'Maximal difference between the two matrice:  4.99956751346e-11'
-		print *, 'Maximal difference between the two matrice:  3.09641352055e-10'
-		print *, 'Maximal difference between the two matrice:  4.99967656793e-11'
-		print *, 'Maximal difference between the two matrice:  1.53330606241e-10'
-		!call output_covmats()
-	endif
-	
-	omlist(1) = 0.26_rt
-	wlist(1)  = -1.5_rt
-	omstds(1) = 0.26_rt
-	wstds(1) = -1.0_rt
-	! Check of calcchisqs...
-	call load_covmats()
-	call invert_covmats()
-	call smu_ximu_CalcOmWChisqs(&
-	    omlist=omlist, numom=numom, wlist=wlist, numw=numw, & ! List of omegam, w
-	    !omlist=omlist(1:1), numom=1, wlist=wlist(1:1), numw=1, & ! List of omegam, w
-	    outputdir='/home/xiaodongli/LSS/2PCF_AP/chisqs', &
-!	    outputdir='/home/xue/workspace/APLike/chisqs', &
-	    baseoutputfile='Debug_170418', & ! Basic name of the outputfile
-	    omstds=omstds, wstds=wstds, numomwstds=1, & ! "standard" values of omegam, w: baseline cosmology for (s,mu) mapping. 
-	!    omstd=0.11_rt, wstd=-2.0_rt & ! "standard" values of omegam, w: baseline cosmology for (s,mu) mapping. 
-	    weightedstds=.false., avg_counts = .false. &
-	    )
-	stop
+        
+        !XiFun(smutab, deltas, nbins, mubins, anglemin, anglemax, smin, smax, nummuedge, intxi)
+        print *, '####################################'
+        print *, 'Checking of smutab_database:'
+        call XiFun(smutab_data, deltas2, nbins_data, mubins_data, 0.05_rt, 1.0_rt, 6.0_rt, 40.0_rt, 26, intxi(1:25))
+        print *, 'intxi = ', real(intxi(1:25))
+        print *, 'python result is '
+        print *, '[13.53979955829141, 12.888214311950264, 13.051479126899061, ...'
+        avg = sum(intxi(1:25)) / 25.0
+        intxi(1:25) = intxi(1:25) / avg
+        print *
+        print *, 'intxi (normed) = ', real(intxi(1:25))
+        print *, 'python result is '
+        print *, '[0.83193377117529554, 0.791898040299293, 0.80192961518456618,...'
+        
+        !systematic correction
+        call calc_syscor()
+        print *, '####################################'
+        print *, 'Checking of systematic correction:'
+        do i = 1, N1
+        do j = 1, N2
+          if(mubins(i).eq.25 .and. j.eq.1) then
+            print *, ' #-mubin, mucut = ', mubins(i), mucuts(j)
+            print *, ' systematic correction @ 1,2-rd bins:'
+            print *, real(dintxi_syscor(1:mubins(i)-1,i,j,1))!TMPTEST
+            print *, ' python rlt = ', '2.267e-03 1.026e-02 -1.985e-02 ... -1.401e-03 -3.181e-03 '
+            print *, ' systematic correction @ 1,6-rd bins:'
+            print *, real(dintxi_syscor(1:mubins(i)-1,i,j,5))!TMPTEST
+            print *, ' python rlt = ', '1.210e-01 7.030e-02 3.038e-02 ... -5.863e-02 -3.604e-02 '
+          endif
+        enddo
+        enddo
+        
+        ! Check of covmats...
+        if(.false.) then
+                call calc_covmats()
+                print *, '######################################'
+                print *, 'Checking of covmats: '
+                print *, 'Python result (Please run code of /home/xiaodongli/LSS/2PCF_AP/2.2.CheckFortran.ipynb): '
+!                print *, 'Python result (Please run code of /home/xue/workspace/APLike/2.2.CheckFortran.ipynb): '
+                print *, 'Maximal difference between the two matrice:  4.5039261036e-10'
+                print *, 'Maximal difference between the two matrice:  4.99956751346e-11'
+                print *, 'Maximal difference between the two matrice:  3.09641352055e-10'
+                print *, 'Maximal difference between the two matrice:  4.99967656793e-11'
+                print *, 'Maximal difference between the two matrice:  1.53330606241e-10'
+                !call output_covmats()
+        endif
+        
+        omlist(1) = 0.26_rt
+        wlist(1)  = -1.5_rt
+        omstds(1) = 0.26_rt
+        wstds(1) = -1.0_rt
+        ! Check of calcchisqs...
+        call load_covmats()
+        call invert_covmats()
+        call smu_ximu_CalcOmWChisqs(&
+            omlist=omlist, numom=numom, wlist=wlist, numw=numw, & ! List of omegam, w
+            !omlist=omlist(1:1), numom=1, wlist=wlist(1:1), numw=1, & ! List of omegam, w
+            outputdir='/home/xiaodongli/LSS/2PCF_AP/chisqs', &
+!            outputdir='/home/xue/workspace/APLike/chisqs', &
+            baseoutputfile='Debug_170418', & ! Basic name of the outputfile
+            omstds=omstds, wstds=wstds, numomwstds=1, & ! "standard" values of omegam, w: baseline cosmology for (s,mu) mapping. 
+        !    omstd=0.11_rt, wstd=-2.0_rt & ! "standard" values of omegam, w: baseline cosmology for (s,mu) mapping. 
+            weightedstds=.false., avg_counts = .false. &
+            )
+        stop
     enddo
     
     
