@@ -53,9 +53,15 @@ implicit none
   integer, parameter :: N1=6, N2=1
 !  integer, parameter :: mubins(N1) = (/ 6,7,8,9,10,11,12,13,14,15 /)
 !  integer, parameter :: mubins(N1) = (/ 10,11,12,13,14,15,16,17,18,19,20 /)
+<<<<<<< HEAD
   integer, parameter :: mubins(N1) = (/ 15,16,17,18,19,20 /)
 !  integer, parameter :: mubins(N1) = (/ 21,22,23,24,25,26 /)
 !  integer, parameter :: mubins(N1) = (/ 20,21,22,23,24,25 /)
+=======
+!  integer, parameter :: mubins(N1) = (/ 15,16,17,18,19,20 /)
+!  integer, parameter :: mubins(N1) = (/ 21,22,23,24,25,26 /)
+  integer, parameter :: mubins(N1) = (/ 20,21,22,23,24,25 /)
+>>>>>>> 8e1c01b9cc8737f7369102ebb757359593e20ef2
 !  integer, parameter :: mubins(N1) = (/ 25,26,27,28,29,30 /)
 !  integer, parameter :: mubins(N1) = (/ 30,31,32,33,34,35 /)
   real(rt), parameter :: mucuts(N2) = (/ 0.97_rt/) !,0.96_rt, 0.95_rt, 0.94_rt, 0.93_rt, 0.92_rt, 0.91_rt, 0.90_rt, 0.89_rt, 0.88_rt, 0.87_rt, 0.86_rt, 0.85_rt /) 
@@ -137,9 +143,15 @@ implicit none
 ! Settings: polynomical fitting degeree for dintxi_sys
   integer, parameter :: polyfitdeg = 3
   logical, parameter :: mock_IO_test = .false.
+<<<<<<< HEAD
   integer :: gb_mock_IO_test_id = 0 !!! We shall do self IO test...
   logical, parameter :: mock_IO_test_usemock3=(.false..and.mock_IO_test)
   logical :: dataself_IO_test = .false. !!! Using real data itself for systematic correction.
+=======
+  integer :: gb_mock_IO_test_id = 1 !!! We shall do self IO test...
+  logical, parameter :: mock_IO_test_usemock3=(.false..and.mock_IO_test)
+  logical :: dataself_IO_test = .true. !!! Using real data itself for systematic correction.
+>>>>>>> 8e1c01b9cc8737f7369102ebb757359593e20ef2
                                  ! Obtained result should be consistent with 
                                  !  "the fiducial cosmology in which the data-2pcf is measured".
                                  ! The option which can recover the fiducial cosmology is considered as the 
