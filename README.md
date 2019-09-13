@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-<<<<<< HEAD
->>>>>>> 8e1c01b9cc8737f7369102ebb757359593e20ef2
 
 AP library
 
@@ -17,6 +12,16 @@ Modify 'AP.sh' (change to your path)
 Add this to ~/.bashrc (change to your path)
 	source /home/xiaodongli/software/APLike/AP.sh
 
+-----------------
+Compile
+-----------------
+
+In src/APfuns_002.f90 files, search for 
+  	character(len=charlen), parameter :: covmatdir = '/home/xiaodongli/software/APLike/covmat_files/', &
+	    chisqdir = '/home/xiaodongli/software/APLike/chisqs/'
+	character(len=charlen), parameter :: syscorfiledir = '/home/xiaodongli/software/APLike/'
+	character(len=charlen), parameter :: data2pcffiledir = '/home/xiaodongli/software/APLike/'
+change the path to your APLike path
 
 -----------------
 Usage
@@ -28,21 +33,22 @@ or equivalently
 	ifort main.f90 -lAP -I/home/xiaodongli/software/APLike/mods
 to compile with AP libarary
 
+
+
+
 -----------------
 Test
 -----------------
 
 	cd test
-	ifort test.f90 $APlm
+	ifort test.f90 $APlm -mkl
 	./a.out
 
-You will get (ignoring the information print at the beginning)
+	
 
- 	For Lambda CDM model with omegam =   0.2700000    
-	  Chisq value of AP method =    70.8979493819427
 	
 -----------------
-How to compile with cosmomc
+Compile with cosmomc
 -----------------
 
 modify two places.
@@ -57,7 +63,9 @@ Also, add in the build of cosmomc EXE
 
 cosmomc: directories camb $(OBJFILES)
         $(F90C) -o ../cosmomc $(OBJFILES) $(LINKFLAGS) $(F90FLAGS)  $$APlm
-=======
-# APLike
-Likelihood for AP
->>>>>>> 69c87f997b86cfa65b525527796a6558528f8078
+
+
+-----------------
+Run using cosmomc
+-----------------
+... Zhenyu Zhang, tell us!...
