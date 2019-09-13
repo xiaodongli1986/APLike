@@ -40,9 +40,11 @@ to compile with AP libarary
 Test
 -----------------
 
+This shows computing AP likelihood for a set of LCDM parameters
 	cd test
 	ifort test.f90 $APlm -mkl
 	./a.out
+
 
 	
 
@@ -69,3 +71,14 @@ cosmomc: directories camb $(OBJFILES)
 Run using cosmomc
 -----------------
 ... Zhenyu Zhang, tell us!...
+
+
+-----------------
+Play with different settings
+-----------------
+In AP_funs002.f90, you can find
+
+	integer, parameter :: mubins(N1) = (/ 20,21,22,23,24,25 /)
+
+Using larger mubin means better constraint, but also having the risk of larger systematics
+Recommending using 15-20 for conservative, 20-25 for aggressive
