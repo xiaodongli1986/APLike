@@ -6,11 +6,7 @@ EXE2=AP_pp
 EXE3=testfc
 #EXE2 = AP_pp 
 #OBJS = AP_funs.o
-<<<<<<< HEAD
-OBJS = AP_funs001.o
-=======
 OBJS = AP_funs002.o
->>>>>>> 8e1c01b9cc8737f7369102ebb757359593e20ef2
 
 
 F90C = ifort -mkl

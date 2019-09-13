@@ -8,12 +8,7 @@ use AP_funs
 implicit none
   
   !integer, parameter :: nbasename = 4, numchain = 3
-<<<<<<< HEAD
-  !integer, parameter :: nbasename = 12, numchain = 4
-  integer, parameter :: nbasename = 2, numchain = 4
-=======
   integer, parameter :: nbasename = 12, numchain = 3
->>>>>>> 8e1c01b9cc8737f7369102ebb757359593e20ef2
   character(len=10000) :: basenames(nbasename), suffix, file1,file2,file3,fullfile2,fullfile3,filep0,filep,fullfilep,filerange0,filerange1,filerange2
   character(len=1000) :: tmpstr, tmpstr1, tmpstr2
   integer :: i,ibase,ichain, iz, icol,omcol,wcol,wacol, H0col, maxcol,omegakcol, f1,f2,f3,fullf2,fullf3,f0,fp,fullfp,ifp, iline,nline, npar
@@ -28,19 +23,15 @@ implicit none
   APlnL0 = 40 ! "typical" APlnL value
   !suffix = '_AP001_bigcov'
   !use_bigcovmat = .true.
-<<<<<<< HEAD
 
-  basenames(1) = '/home/xiaodongli/software/cosmomc/PLA/base_w/plikHM_TTTEEE_lowTEB/base_w_plikHM_TTTEEE_lowTEB'
-  basenames(2) = '/home/xiaodongli/software/cosmomc/PLA/base/plikHM_TTTEEE_lowEB/base_plikHM_TTTEEE_lowEB'
-=======
->>>>>>> 8e1c01b9cc8737f7369102ebb757359593e20ef2
+!  basenames(1) = '/home/xiaodongli/software/cosmomc/PLA/base_w/plikHM_TTTEEE_lowTEB/base_w_plikHM_TTTEEE_lowTEB'
+!  basenames(2) = '/home/xiaodongli/software/cosmomc/PLA/base/plikHM_TTTEEE_lowEB/base_plikHM_TTTEEE_lowEB'
   
   !basenames(1) = '/home/xiaodongli/software/cosmomc/chains/base_wwa_xue18/PLC_w'
   !basenames(1) = '/home/xiaodongli/software/cosmomc/chains/base_wwa_xue18/PLC_BAO_w'
   !basenames(3) = '/home/xiaodongli/software/cosmomc/chains/base_wwa_xue18/PLC_wa'
   !basenames(4) = '/home/xiaodongli/software/cosmomc/chains/base_wwa_xue18/PLC_BAO_wa'
 
-<<<<<<< HEAD
   !basenames(1) = '/home/xiaodongli/software/cosmomc/chains/plcbaos/PLC_BAO_base'
   !basenames(2) = '/home/xiaodongli/software/cosmomc/chains/plcbaos/PLC_BAO_base_w'
   !basenames(3) = '/home/xiaodongli/software/cosmomc/chains/plcbaos/PLC_BAO_base_omegak'
@@ -53,7 +44,6 @@ implicit none
   !basenames(10) = '/home/xiaodongli/software/cosmomc/chains/plcbaos/PLC_BAO_base_w_nnu'
   !basenames(11) = '/home/xiaodongli/software/cosmomc/chains/plcbaos/PLC_BAO_base_w_nrun'
   !basenames(12) = '/home/xiaodongli/software/cosmomc/chains/plcbaos/PLC_BAO_base_w_r'
-=======
   basenames(1) = '/home/xiaodongli/software/cosmomc/chains/plcbaos/PLC_BAO_base'
   basenames(2) = '/home/xiaodongli/software/cosmomc/chains/plcbaos/PLC_BAO_base_w'
   basenames(3) = '/home/xiaodongli/software/cosmomc/chains/plcbaos/PLC_BAO_base_omegak'
@@ -66,7 +56,6 @@ implicit none
   basenames(10) = '/home/xiaodongli/software/cosmomc/chains/plcbaos/PLC_BAO_base_w_nnu'
   basenames(11) = '/home/xiaodongli/software/cosmomc/chains/plcbaos/PLC_BAO_base_w_nrun'
   basenames(12) = '/home/xiaodongli/software/cosmomc/chains/plcbaos/PLC_BAO_base_w_r'
->>>>>>> 8e1c01b9cc8737f7369102ebb757359593e20ef2
 
   !use_bigcovmat = .false.; NBComp = .false.
   !suffix = '_AP001_bin1ref_mubin20to25_mucut0.97_fact1to1'
@@ -78,13 +67,10 @@ implicit none
   !-------------------------------------
   ! standard options
   use_bigcovmat = .true.; NBComp = .true.
-<<<<<<< HEAD
   !suffix = '_AP001_bigcov_mubin15to20_mucut0.97_fact1to1_NBComp'
-  NBComp_Simp=.false.; suffix = '_AP001_bigcov_mubin15to20_mucut0.97_fact1to1_NBCompFull'
-=======
+  !NBComp_Simp=.false.; suffix = '_AP001_bigcov_mubin15to20_mucut0.97_fact1to1_NBCompFull'
   suffix = '_AP001_bigcov_mubin15to20_mucut0.97_fact1to1_NBComp'
   !NBComp_Simp=.false.; suffix = '_AP001_bigcov_mubin15to20_mucut0.97_fact1to1_NBCompFull'
->>>>>>> 8e1c01b9cc8737f7369102ebb757359593e20ef2
 
   !suffix = '_AP001_bigcov_mubin20to25_mucut0.97_fact1to1_NBComp'
   !NBComp_Simp=.false.; suffix = '_AP001_bigcov_mubin20to25_mucut0.97_fact1to1_NBCompFull'
@@ -157,11 +143,7 @@ implicit none
         call system('cp '//trim(adjustl(filerange0))//' '//trim(adjustl(filerange2)))
       endif
     enddo
-<<<<<<< HEAD
-    !cycle
-=======
     cycle
->>>>>>> 8e1c01b9cc8737f7369102ebb757359593e20ef2
     do ichain = 1, numchain
       write(tmpstr, *) ichain
       file1 = trim(adjustl(basenames(ibase)))//'_'//trim(adjustl(tmpstr))//'.txt'
